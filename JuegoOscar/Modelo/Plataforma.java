@@ -22,7 +22,7 @@ public class Plataforma {
 	}
 	
 	public void dibujar(Graphics g){
-		g.drawRect(x, y, ancho, alto);
+		g.fillRect(x, y, ancho, alto);
 	}
 
 	public int getX() {

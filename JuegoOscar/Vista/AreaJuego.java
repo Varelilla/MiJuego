@@ -30,6 +30,7 @@ public class AreaJuego extends JPanel {
 		plataformas.add(new Plataforma(1400, 700, 100, 100));
 		plataformas.add(new Plataforma(1700, 600, 100, 100));
 		plataformas.add(new Plataforma(1400, 500, 100, 100));
+		plataformas.add(new Plataforma(1, 1, 10, 2000));
 	}
 
 	public void paint(Graphics g) {

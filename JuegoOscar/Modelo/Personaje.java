@@ -48,14 +48,17 @@ public class Personaje {
 	private int plataformaDerecha;
 	private int mirando = 0;
 	private int posicion = 2;
-	private Image img;
+	private Image imgPared;
+	private Image imgParedInversa;
     private double gravedad;
     private ArrayList<Plataforma> plataformas;
     private ArrayList<ArrayList<Image>> sprites;
     private int frame = 0;
     private boolean dobleSalto = true;
+    private boolean enPared = true;
    
 	public Personaje(AreaJuego level,int x, int y) {
+		enPared = false;
 		tocandoIzquierda = false;
 		tocandoDerecha = false;
 		tocandoSuelo = false;
@@ -66,7 +69,6 @@ public class Personaje {
 		//this.frame=frame;
 		gravedad =1.1;
 		xAceleracion = 2;
-		//img = new ImageIcon(getClass().getResource("meatboystanding.png")).getImage();
 		this.level=level;
 		plataformas = level.getPlataformas();
 		cargarImagenes();
@@ -78,6 +80,7 @@ public class Personaje {
 	}
 
 	public void mover(){
+		enPared = false;
 		if(!vivo){
 			restart();
 		}
@@ -89,16 +92,16 @@ public class Personaje {
 			frame = 0;
 			estadoActual++;
 		}
-		if (estadoActual >= sprites.get(0).size()) estadoActual = 0;
 		if(!enAire){
 			dobleSalto = true;
 			if(keys[ARRIBA]){
-				yVel=-14;
+				yVel=-18;
+				estadoActual = 0;
 				enAire=true;
 				saltando=true;
 			}
 			if(keys[ARRIBA]&&keys[DERECHA]){
-				yVel=-14;
+				yVel=-18;
 				mirando = 0;
 				saltando=true;
 			}
@@ -135,8 +138,13 @@ public class Personaje {
 			if(keys[DERECHA]){
 				posicion = 0;
 				mirando = 0;
-				if (tocandoDerecha)
-					xVel=0;
+				if (tocandoDerecha) {
+					if (yVel > 0)
+						yVel -= 0.85;
+					xVel = 0;
+					posicion = 12;
+					enPared = true;
+				}
 				else if(xVel<VEL_MAXIMA*1.5&&xVel>=0)
 					xVel+=xAceleracion;
 				else if(xVel<VEL_MAXIMA)
@@ -147,8 +155,13 @@ public class Personaje {
 			else if(keys[IZQUIERDA]){
 				posicion = 0;
 				mirando = 1;
-				if(tocandoIzquierda)
+				if(tocandoIzquierda) {
+					enPared = true;
+					if (yVel > 0)
+						yVel -= 0.85;
 					xVel = 0;
+					posicion = 12;
+				}
 				else if(xVel>-VEL_MAXIMA*1.5&&xVel<=0)
 					xVel-=xAceleracion;
 				else if(xVel>-VEL_MAXIMA){
@@ -175,16 +188,16 @@ public class Personaje {
 				if(tocandoDerecha)
 				{
 						xVel = -12;
-						yVel = -14;
+						yVel = -18;
 				}
 				else if(tocandoIzquierda)
 				{
 						xVel = 12;
-						yVel = -14;
+						yVel = -18;
 				}
 				else if(dobleSalto) {
 					dobleSalto = false;
-					yVel = -14;
+					yVel = -18;
 				}
 			}
 			if(yVel<=VEL_MAXIMA_CAIDA)
@@ -256,6 +269,7 @@ public class Personaje {
 				if(!enAire && (xPos+ANCHO<plataformaIzquierda+5 || xPos>plataformaDerecha-5))
 				{	
 					enAire = true;
+					estadoActual = 0;
 				}
 				if(enAire && leftHitBox.intersects(temp.getHitBox()) && !tocandoSuelo)
 				{
@@ -321,22 +335,21 @@ public class Personaje {
 		
 		tmp = new ArrayList<Image>();
 		tmp2 = new ArrayList<Image>();
-		for (int i = 0; i < 10; i++) {
-			
+		for (int i = 0; i < 9; i++) {
 			Image image = new ImageIcon(getClass().getResource("jump/jumpf000" + i + ".png")).getImage();
 			tmp.add(image);
-			image = new ImageIcon(getClass().getResource("jump/jumpb000" + i + ".png")).getImage();
-			tmp2.add(image);
+			Image image2 = new ImageIcon(getClass().getResource("jump/jumpb000" + i + ".png")).getImage();
+			tmp2.add(image2);
 		}	
 		sprites.add(tmp);
 		sprites.add(tmp2);
 		
 		tmp = new ArrayList<Image>();
 		tmp2 = new ArrayList<Image>();
-		for (int i = 0; i < 10; i++) {
-			Image image = new ImageIcon(getClass().getResource("jump/dbjump000" + i + ".png")).getImage();
+		for (int i = 0; i < 11; i++) {
+			Image image = new ImageIcon(getClass().getResource("jump/dbljumpf000" + i + ".png")).getImage();
 			tmp.add(image);
-			image = new ImageIcon(getClass().getResource("jump/dbjumpf000" + i + ".png")).getImage();
+			image = new ImageIcon(getClass().getResource("jump/dbljumpb000" + i + ".png")).getImage();
 			tmp2.add(image);
 		}	
 		sprites.add(tmp);
@@ -344,7 +357,7 @@ public class Personaje {
 		
 		tmp = new ArrayList<Image>();
 		tmp2 = new ArrayList<Image>();
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 9; i++) {
 			Image image = new ImageIcon(getClass().getResource("jump/jump000" + i + ".png")).getImage();
 			tmp.add(image);
 			BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
@@ -366,8 +379,8 @@ public class Personaje {
 
 		tmp = new ArrayList<Image>();
 		tmp2 = new ArrayList<Image>();
-		for (int i = 0; i < 10; i++) {
-			Image image = new ImageIcon(getClass().getResource("jump/dbjump000" + i + ".png")).getImage();
+		for (int i = 0; i < 11; i++) {
+			Image image = new ImageIcon(getClass().getResource("jump/dbljump000" + i + ".png")).getImage();
 			tmp.add(image);
 			BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 			BufferedImage mirrorImage = new BufferedImage(bimage.getWidth(), bimage.getHeight(), bimage.getType());
@@ -385,7 +398,21 @@ public class Personaje {
 		}	
 		sprites.add(tmp);
 		sprites.add(tmp2);
-		
+
+		imgPared = new ImageIcon(getClass().getResource("wallgrab/wallgrabairidle0001.png")).getImage();
+		BufferedImage bimage = new BufferedImage(imgPared.getWidth(null), imgPared.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+		BufferedImage mirrorImage = new BufferedImage(bimage.getWidth(), bimage.getHeight(), bimage.getType());
+
+	    Graphics2D g2 = mirrorImage.createGraphics();
+
+	    AffineTransform at = AffineTransform.getScaleInstance(-1, 1);
+	    at.translate(-bimage.getWidth(), 0);
+
+	    g2.transform(at);
+	    g2.drawImage(imgPared, 0, 0, null);
+
+	    g2.dispose();
+	    imgParedInversa = mirrorImage;
 	}
 
 	public void restart(){
@@ -400,19 +427,27 @@ public class Personaje {
 	}
 
 	public void dibujar(Graphics g){
+		if (enPared) {
+			if (mirando == 0) {
+				g.drawImage(imgPared, xPos, yPos, null);
+			} else {
+				g.drawImage(imgParedInversa, xPos, yPos, null);
+			}
+		} else
 		if (enAire) {
 			if (xVel == 0) {
 				if (dobleSalto)
-					g.drawImage(sprites.get(10 + mirando).get(estadoActual), xPos, yPos, null);
+					g.drawImage(sprites.get(10 + mirando).get(estadoActual%8), xPos, yPos, null);
 				else
-					g.drawImage(sprites.get(8+ mirando).get(estadoActual), xPos, yPos, null);
-			}
-			if (dobleSalto) {
-				g.drawImage(sprites.get(4 + mirando).get(estadoActual), xPos, yPos, null);
+					g.drawImage(sprites.get(8 + mirando).get(estadoActual%8), xPos, yPos, null);
 			} else {
-				g.drawImage(sprites.get(6 + mirando).get(estadoActual), xPos, yPos, null);
+				if (dobleSalto) {
+					g.drawImage(sprites.get(4 + mirando).get(estadoActual%9), xPos, yPos, null);
+				} else {
+					g.drawImage(sprites.get(6 + mirando).get(estadoActual%9), xPos, yPos, null);
+				}
 			}
-		} else g.drawImage(sprites.get(posicion + mirando).get(estadoActual),xPos,yPos,null);
+		} else g.drawImage(sprites.get(posicion + mirando).get(estadoActual%8),xPos,yPos,null);
 	}
 	public boolean[] getKeys() {
 		return keys;
