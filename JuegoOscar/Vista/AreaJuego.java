@@ -14,7 +14,7 @@ public class AreaJuego extends JPanel {
 	 */
 	public AreaJuego() {
 		setBounds(0, 0, 300, 100);
-		setBackground(Color.WHITE);
+		setBackground(Color.gray);
 		setFocusable(true);
 		setRequestFocusEnabled(true);
 		crearPlataformas();

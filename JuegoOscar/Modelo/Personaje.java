@@ -53,6 +53,7 @@ public class Personaje {
     private ArrayList<Plataforma> plataformas;
     private ArrayList<ArrayList<Image>> sprites;
     private int frame = 0;
+    private boolean dobleSalto = true;
    
 	public Personaje(AreaJuego level,int x, int y) {
 		tocandoIzquierda = false;
@@ -90,13 +91,16 @@ public class Personaje {
 		}
 		if (estadoActual >= sprites.get(0).size()) estadoActual = 0;
 		if(!enAire){
+			dobleSalto = true;
 			if(keys[ARRIBA]){
 				yVel=-14;
 				enAire=true;
+				saltando=true;
 			}
 			if(keys[ARRIBA]&&keys[DERECHA]){
-				yVel=-18;
+				yVel=-14;
 				mirando = 0;
+				saltando=true;
 			}
 			if(keys[DERECHA]){
 				posicion = 0;
@@ -128,7 +132,6 @@ public class Personaje {
 			}
 		}
 		else{
-			
 			if(keys[DERECHA]){
 				posicion = 0;
 				mirando = 0;
@@ -164,11 +167,11 @@ public class Personaje {
 				xVel=0;
 			}	
 			if(!keys[ARRIBA]){
-				saltando=true;
-			}
-			if(saltando&&keys[ARRIBA])
-			{
 				saltando=false;
+			}
+			if(!saltando&&keys[ARRIBA])
+			{
+				saltando=true;
 				if(tocandoDerecha)
 				{
 						xVel = -12;
@@ -178,6 +181,10 @@ public class Personaje {
 				{
 						xVel = 12;
 						yVel = -14;
+				}
+				else if(dobleSalto) {
+					dobleSalto = false;
+					yVel = -14;
 				}
 			}
 			if(yVel<=VEL_MAXIMA_CAIDA)
@@ -213,13 +220,13 @@ public class Personaje {
 	}
 
 	public void checkCollisions(){
-		int counter=0;
 		vivo=true;
 		ArrayList<Plataforma> tmplist = new ArrayList<Plataforma>();
 		tmplist.addAll(plataformas);
 		for(int i=0;i<tmplist.size();i++){
 			Plataforma temp = tmplist.get(i);
 			if(hitbox.intersects(temp.getHitBox())){
+				
 				if (Math.abs(xPos+ANCHO-temp.getLeft())<=xVel+5 && yPos>temp.getTop()-ALTO && yPos<temp.getBottom() && rightHitBox.intersects(temp.getHitBox()))
 				{
 					xPos = temp.getLeft()-ANCHO;
@@ -250,8 +257,6 @@ public class Personaje {
 				{	
 					enAire = true;
 				}
-				if(!botHitBox.intersects(temp.getHitBox()))
-					counter++;
 				if(enAire && leftHitBox.intersects(temp.getHitBox()) && !tocandoSuelo)
 				{
 					tocandoIzquierda= true;
@@ -262,10 +267,6 @@ public class Personaje {
 				}
 			}
 		}
-		if(counter==tmplist.size()){
-			enAire=true;
-		}
-
 	}
 
 	public void cargarImagenes() {
@@ -304,23 +305,87 @@ public class Personaje {
 			BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 			BufferedImage mirrorImage = new BufferedImage(bimage.getWidth(), bimage.getHeight(), bimage.getType());
 
-		    // Crear un objeto Graphics2D para dibujar en la nueva imagen
 		    Graphics2D g2 = mirrorImage.createGraphics();
 
-		    // Crear una transformación que invierte la imagen horizontalmente
 		    AffineTransform at = AffineTransform.getScaleInstance(-1, 1);
 		    at.translate(-bimage.getWidth(), 0);
 
-		    // Aplicar la transformación y dibujar la imagen original en la nueva imagen
 		    g2.transform(at);
 		    g2.drawImage(image, 0, 0, null);
 
-		    // Limpiar los recursos de Graphics2D
 		    g2.dispose();
 		    tmp2.add(mirrorImage);
 		}	
 		sprites.add(tmp);
 		sprites.add(tmp2);
+		
+		tmp = new ArrayList<Image>();
+		tmp2 = new ArrayList<Image>();
+		for (int i = 0; i < 10; i++) {
+			
+			Image image = new ImageIcon(getClass().getResource("jump/jumpf000" + i + ".png")).getImage();
+			tmp.add(image);
+			image = new ImageIcon(getClass().getResource("jump/jumpb000" + i + ".png")).getImage();
+			tmp2.add(image);
+		}	
+		sprites.add(tmp);
+		sprites.add(tmp2);
+		
+		tmp = new ArrayList<Image>();
+		tmp2 = new ArrayList<Image>();
+		for (int i = 0; i < 10; i++) {
+			Image image = new ImageIcon(getClass().getResource("jump/dbjump000" + i + ".png")).getImage();
+			tmp.add(image);
+			image = new ImageIcon(getClass().getResource("jump/dbjumpf000" + i + ".png")).getImage();
+			tmp2.add(image);
+		}	
+		sprites.add(tmp);
+		sprites.add(tmp2);
+		
+		tmp = new ArrayList<Image>();
+		tmp2 = new ArrayList<Image>();
+		for (int i = 0; i < 10; i++) {
+			Image image = new ImageIcon(getClass().getResource("jump/jump000" + i + ".png")).getImage();
+			tmp.add(image);
+			BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+			BufferedImage mirrorImage = new BufferedImage(bimage.getWidth(), bimage.getHeight(), bimage.getType());
+
+		    Graphics2D g2 = mirrorImage.createGraphics();
+
+		    AffineTransform at = AffineTransform.getScaleInstance(-1, 1);
+		    at.translate(-bimage.getWidth(), 0);
+
+		    g2.transform(at);
+		    g2.drawImage(image, 0, 0, null);
+
+		    g2.dispose();
+		    tmp2.add(mirrorImage);
+		}	
+		sprites.add(tmp);
+		sprites.add(tmp2);
+
+		tmp = new ArrayList<Image>();
+		tmp2 = new ArrayList<Image>();
+		for (int i = 0; i < 10; i++) {
+			Image image = new ImageIcon(getClass().getResource("jump/dbjump000" + i + ".png")).getImage();
+			tmp.add(image);
+			BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+			BufferedImage mirrorImage = new BufferedImage(bimage.getWidth(), bimage.getHeight(), bimage.getType());
+
+		    Graphics2D g2 = mirrorImage.createGraphics();
+
+		    AffineTransform at = AffineTransform.getScaleInstance(-1, 1);
+		    at.translate(-bimage.getWidth(), 0);
+
+		    g2.transform(at);
+		    g2.drawImage(image, 0, 0, null);
+
+		    g2.dispose();
+		    tmp2.add(mirrorImage);
+		}	
+		sprites.add(tmp);
+		sprites.add(tmp2);
+		
 	}
 
 	public void restart(){
@@ -335,7 +400,19 @@ public class Personaje {
 	}
 
 	public void dibujar(Graphics g){
-		g.drawImage(sprites.get(posicion + mirando).get(estadoActual),xPos,yPos,null);
+		if (enAire) {
+			if (xVel == 0) {
+				if (dobleSalto)
+					g.drawImage(sprites.get(10 + mirando).get(estadoActual), xPos, yPos, null);
+				else
+					g.drawImage(sprites.get(8+ mirando).get(estadoActual), xPos, yPos, null);
+			}
+			if (dobleSalto) {
+				g.drawImage(sprites.get(4 + mirando).get(estadoActual), xPos, yPos, null);
+			} else {
+				g.drawImage(sprites.get(6 + mirando).get(estadoActual), xPos, yPos, null);
+			}
+		} else g.drawImage(sprites.get(posicion + mirando).get(estadoActual),xPos,yPos,null);
 	}
 	public boolean[] getKeys() {
 		return keys;
