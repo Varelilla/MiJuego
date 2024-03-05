@@ -4,6 +4,8 @@ import java.awt.Rectangle;
 public class Plataforma {
 	private int x;
 	private int y;
+	private int xOrigen;
+	private int yOrigen;
 	private int ancho;
 	private int alto;
 	private Rectangle hitBox;
@@ -13,6 +15,8 @@ public class Plataforma {
 	public Plataforma(int x, int y, int w, int h){
 		xscroll=0;
 		yscroll=0;
+		xOrigen = x;
+		yOrigen = y;
 		this.x = x;
 		this.y = y;
 		ancho = w;
@@ -71,6 +75,8 @@ public class Plataforma {
 
 	public void setXscroll(int xscroll) {
 		this.xscroll = xscroll;
+		x = xOrigen - xscroll;
+		hitBox = new Rectangle(x,y,ancho,alto);
 	}
 
 	public int getYscroll() {
@@ -95,5 +101,21 @@ public class Plataforma {
 
 	public int getBottom(){
 		return hitBox.y+alto;
+	}
+
+	public int getxOrigen() {
+		return xOrigen;
+	}
+
+	public void setxOrigen(int xOrigen) {
+		this.xOrigen = xOrigen;
+	}
+
+	public int getyOrigen() {
+		return yOrigen;
+	}
+
+	public void setyOrigen(int yOrigen) {
+		this.yOrigen = yOrigen;
 	}
 }

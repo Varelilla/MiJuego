@@ -30,6 +30,9 @@ public class EventosAreaJuego {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				personaje.mover();
+				for (Enemigo ene: areaJuego.getEnemigos()) {
+					ene.mover();
+				}
 				areaJuego.repaint();
 			}
 		});

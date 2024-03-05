@@ -52,16 +52,22 @@ public class Personaje {
 	private Image imgParedInversa;
     private double gravedad;
     private ArrayList<Plataforma> plataformas;
+    private ArrayList<Polvo> polvos;
+    private ArrayList<Enemigo> enemigos;
     private ArrayList<ArrayList<Image>> sprites;
     private int frame = 0;
     private boolean dobleSalto = true;
     private boolean enPared = true;
+    private int xScroll;
+    private int yScroll;
    
 	public Personaje(AreaJuego level,int x, int y) {
 		enPared = false;
 		tocandoIzquierda = false;
 		tocandoDerecha = false;
 		tocandoSuelo = false;
+		xScroll = 0;
+		yScroll = 0;
 		vivo=true;
 		enAire=true;
 		initXPos=xPos=x;
@@ -71,6 +77,8 @@ public class Personaje {
 		xAceleracion = 2;
 		this.level=level;
 		plataformas = level.getPlataformas();
+		polvos = level.getPolvos();
+		enemigos = level.getEnemigos();
 		cargarImagenes();
 		hitbox = new Rectangle(xPos,yPos,ANCHO,ALTO);
 		leftHitBox = new Rectangle(xPos-4,yPos+4,8,ALTO-4);
@@ -95,13 +103,13 @@ public class Personaje {
 		if(!enAire){
 			dobleSalto = true;
 			if(keys[ARRIBA]){
-				yVel=-18;
+				yVel=-14;
 				estadoActual = 0;
 				enAire=true;
 				saltando=true;
 			}
 			if(keys[ARRIBA]&&keys[DERECHA]){
-				yVel=-18;
+				yVel=-14;
 				mirando = 0;
 				saltando=true;
 			}
@@ -142,7 +150,7 @@ public class Personaje {
 					if (yVel > 0)
 						yVel -= 0.85;
 					xVel = 0;
-					posicion = 12;
+					posicion = 2;
 					enPared = true;
 				}
 				else if(xVel<VEL_MAXIMA*1.5&&xVel>=0)
@@ -160,7 +168,7 @@ public class Personaje {
 					if (yVel > 0)
 						yVel -= 0.85;
 					xVel = 0;
-					posicion = 12;
+					posicion = 2;
 				}
 				else if(xVel>-VEL_MAXIMA*1.5&&xVel<=0)
 					xVel-=xAceleracion;
@@ -188,22 +196,23 @@ public class Personaje {
 				if(tocandoDerecha)
 				{
 						xVel = -12;
-						yVel = -18;
+						yVel = -14;
 				}
 				else if(tocandoIzquierda)
 				{
 						xVel = 12;
-						yVel = -18;
+						yVel = -14;
 				}
 				else if(dobleSalto) {
 					dobleSalto = false;
-					yVel = -18;
+					yVel = -14;
 				}
 			}
 			if(yVel<=VEL_MAXIMA_CAIDA)
 				yVel+=gravedad;
 		}
-		xPos+=xVel;
+		if ((xPos+xVel)>= 1400) sumarScrollX();
+		else xPos+=xVel;
 		yPos+=yVel;
 		tocandoDerecha = false;
 		tocandoIzquierda = false;
@@ -212,7 +221,7 @@ public class Personaje {
 		leftHitBox = new Rectangle(xPos-4,yPos+4,8,ALTO-4);
 		rightHitBox = new Rectangle(xPos+ANCHO -4,yPos+4,8,ALTO-4);
 		botHitBox = new Rectangle(xPos+4,yPos+ALTO-4,ANCHO-4,4);
-		checkCollisions();
+		
 		if(yPos>level.getHeight()){
 			restart();
 		}
@@ -229,7 +238,14 @@ public class Personaje {
 			yPos=0; 
 			yVel=0;
 		}
+		checkCollisions();
 		
+	}
+	
+	public void sumarScrollX() {
+		xScroll+=xVel;
+		plataformaIzquierda-=xVel;
+		plataformaDerecha-=xVel;
 	}
 
 	public void checkCollisions(){
@@ -237,7 +253,8 @@ public class Personaje {
 		ArrayList<Plataforma> tmplist = new ArrayList<Plataforma>();
 		tmplist.addAll(plataformas);
 		for(int i=0;i<tmplist.size();i++){
-			Plataforma temp = tmplist.get(i);
+			Plataforma temp = tmplist.get(i);	
+			temp.setXscroll(xScroll);
 			if(hitbox.intersects(temp.getHitBox())){
 				
 				if (Math.abs(xPos+ANCHO-temp.getLeft())<=xVel+5 && yPos>temp.getTop()-ALTO && yPos<temp.getBottom() && rightHitBox.intersects(temp.getHitBox()))
@@ -260,6 +277,7 @@ public class Personaje {
 				}
 				else
 				{
+					
 					tocandoSuelo = true;
 					yPos = temp.getBottom();
 					yVel = 0;
@@ -281,6 +299,25 @@ public class Personaje {
 				}
 			}
 		}
+		for (Polvo p : polvos) {
+			p.setXscroll(xScroll);
+			Rectangle rect = new Rectangle(p.getX(),p.getY()-5,p.getAncho(),p.getAlto());
+			if(hitbox.intersects(rect) || leftHitBox.intersects(rect) || rightHitBox.intersects(rect) || botHitBox.intersects(rect)){
+				p.setPisado(true);
+			}
+			
+		}
+		for (Enemigo p : enemigos) {
+			p.setXscroll(xScroll);
+			p.hitBoxEnemigo();
+			Rectangle rect = p.getHitBox();
+			if(hitbox.intersects(rect) || leftHitBox.intersects(rect) || rightHitBox.intersects(rect) || botHitBox.intersects(rect)){
+				restart();
+			}
+			
+			
+		}
+
 	}
 
 	public void cargarImagenes() {
@@ -424,6 +461,12 @@ public class Personaje {
 		yVel=0;
 		estadoActual=0;
 		enAire = true;
+		xScroll = 0;
+		for (Plataforma p : plataformas) p.setXscroll(0);
+		for (Polvo p: polvos) {
+			p.setPisado(false);
+			p.setXscroll(0);
+		}
 	}
 
 	public void dibujar(Graphics g){
@@ -447,12 +490,30 @@ public class Personaje {
 					g.drawImage(sprites.get(6 + mirando).get(estadoActual%9), xPos, yPos, null);
 				}
 			}
-		} else g.drawImage(sprites.get(posicion + mirando).get(estadoActual%8),xPos,yPos,null);
+		} else {
+			g.drawImage(sprites.get(posicion + mirando).get(estadoActual%8),xPos,yPos,null);
+		}
 	}
 	public boolean[] getKeys() {
 		return keys;
 	}
 	public void setKeys(boolean[] keys) {
 		this.keys = keys;
+	}
+
+	public int getxScroll() {
+		return xScroll;
+	}
+
+	public void setxScroll(int xScroll) {
+		this.xScroll = xScroll;
+	}
+
+	public int getyScroll() {
+		return yScroll;
+	}
+
+	public void setyScroll(int yScroll) {
+		this.yScroll = yScroll;
 	}
 }
