@@ -36,6 +36,7 @@ public class Personaje {
 	private boolean tocandoDerecha;
 	private boolean tocandoSuelo;
 	private boolean saltando;
+	private boolean tocandoCuesta;
 	private AreaJuego level;
 	private boolean[] keys = new boolean[5];
 	private final int IZQUIERDA = 0;
@@ -66,6 +67,7 @@ public class Personaje {
 		tocandoIzquierda = false;
 		tocandoDerecha = false;
 		tocandoSuelo = false;
+		tocandoCuesta = false;
 		xScroll = 0;
 		yScroll = 0;
 		vivo=true;
@@ -256,32 +258,31 @@ public class Personaje {
 			Plataforma temp = tmplist.get(i);	
 			temp.setXscroll(xScroll);
 			if(hitbox.intersects(temp.getHitBox())){
-				
-				if (Math.abs(xPos+ANCHO-temp.getLeft())<=xVel+5 && yPos>temp.getTop()-ALTO && yPos<temp.getBottom() && rightHitBox.intersects(temp.getHitBox()))
-				{
-					xPos = temp.getLeft()-ANCHO;
-					tocandoDerecha = true;
-				}
-				else if (Math.abs(xPos-temp.getRight())<=Math.abs(xVel-5) && yPos>temp.getTop()-ALTO && yPos<temp.getBottom() && leftHitBox.intersects(temp.getHitBox()))
-				{
-					xPos = temp.getRight();
-					tocandoIzquierda = true;
-				}
-				else if (yVel>=0 && yPos+ALTO<temp.getBottom())
-				{
+					if (Math.abs(xPos+ANCHO-temp.getLeft())<=xVel+5 && yPos>temp.getTop()-ALTO && yPos<temp.getBottom() && rightHitBox.intersects(temp.getHitBox()))
+					{
+						xPos = temp.getLeft()-ANCHO;
+						tocandoDerecha = true;
+					}
+					else if (Math.abs(xPos-temp.getRight())<=Math.abs(xVel-5) && yPos>temp.getTop()-ALTO && yPos<temp.getBottom() && leftHitBox.intersects(temp.getHitBox()))
+					{
+						xPos = temp.getRight();
+						tocandoIzquierda = true;
+					}
+					else if (yVel>=0 && yPos+ALTO<temp.getBottom())
+					{
 						yVel = 0;
 						plataformaIzquierda = temp.getLeft();
 						plataformaDerecha = temp.getRight();
 						yPos = temp.getTop()-ALTO;
 						enAire=false;
-				}
-				else
-				{
-					
-					tocandoSuelo = true;
-					yPos = temp.getBottom();
-					yVel = 0;
-				}
+					}
+					else
+					{
+						tocandoSuelo = true;
+						yPos = temp.getBottom();
+						yVel = 0;
+					}
+
 			}	
 			else{
 				if(!enAire && (xPos+ANCHO<plataformaIzquierda+5 || xPos>plataformaDerecha-5))

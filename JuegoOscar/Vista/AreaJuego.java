@@ -26,14 +26,14 @@ public class AreaJuego extends JPanel {
 	
 	public void crearPlataformas() {
 		plataformas = new ArrayList<Plataforma>();
-		plataformas.add(new Plataforma(0, 900, 1000, 1000));
-		plataformas.add(new Plataforma(200, 800, 800, 800));
-		plataformas.add(new Plataforma(1200, 800, 800, 800));
+		plataformas.add(new Plataforma(0, 900, 200, 1000));
+		plataformas.add(new Plataforma(200, 800, 800, 100));
+		plataformas.add(new Plataforma(1200, 800, 800, 100));
 		plataformas.add(new Plataforma(1400, 700, 100, 100));
 		plataformas.add(new Plataforma(1700, 600, 100, 100));
-		plataformas.add(new Plataforma(2000, 700, 800, 800));
+		plataformas.add(new Plataforma(2000, 700, 800, 100));
 		plataformas.add(new Plataforma(1400, 500, 100, 100));
-		plataformas.add(new Plataforma(1, 1, 10, 2000));
+		plataformas.add(new Plataforma(-90, 0, 100, 2000));
 		polvos = new ArrayList<Polvo>();
 		polvos.add(new Polvo(1,1,10,20));
 		polvos.add(new Polvo(1,20,10,20));
