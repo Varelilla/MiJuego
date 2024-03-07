@@ -4,13 +4,11 @@ import java.awt.Rectangle;
 
 import javax.swing.ImageIcon;
 
-public class Polvo extends Plataforma{
-	private boolean pisado;
+public class Obstaculo extends Plataforma{
 	private Image image;
 	
-	public Polvo(int x, int y, int w, int h) {
+	public Obstaculo(int x, int y, int w, int h) {
 		super(x, y, w, h);
-		pisado = false;
 		image = new ImageIcon(getClass().getResource("Tiles/polvo.png")).getImage();
 	}
 	
@@ -18,12 +16,5 @@ public class Polvo extends Plataforma{
 		g.drawImage(image, getX() , getY() , getAncho() , getAlto() ,null);
 	}
 	
-	public boolean isPisado() {
-		return pisado;
-	}
-	public void setPisado(boolean pisado) {
-		this.pisado = pisado;
-	}
 	
-
 }

@@ -1,7 +1,9 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class AreaJuego extends JPanel {
@@ -10,6 +12,8 @@ public class AreaJuego extends JPanel {
 	private ArrayList<Plataforma> plataformas;
 	private ArrayList<Polvo> polvos;
 	private ArrayList<Enemigo> enemigos;
+	private ArrayList<Obstaculo> obstaculos;
+	private Image image;
 
 	/**
 	 * Create the panel.
@@ -35,14 +39,14 @@ public class AreaJuego extends JPanel {
 		plataformas.add(new Plataforma(1400, 500, 100, 100));
 		plataformas.add(new Plataforma(-50, 0, 100, 900,true));
 		polvos = new ArrayList<Polvo>();
-		polvos.add(new Polvo(1,1,10,20));
-		polvos.add(new Polvo(1,20,10,20));
-		polvos.add(new Polvo(1,40,10,20));
-		polvos.add(new Polvo(1,60,10,20));
-		polvos.add(new Polvo(1,80,10,20));
-		polvos.add(new Polvo(1,100,10,20));
-		polvos.add(new Polvo(1,120,10,20));
-		polvos.add(new Polvo(1,140,10,20));
+		polvos.add(new Polvo(45,1,10,20));
+		polvos.add(new Polvo(45,20,10,20));
+		polvos.add(new Polvo(45,40,10,20));
+		polvos.add(new Polvo(45,60,10,20));
+		polvos.add(new Polvo(45,80,10,20));
+		polvos.add(new Polvo(45,100,10,20));
+		polvos.add(new Polvo(45,120,10,20));
+		polvos.add(new Polvo(45,140,10,20));
 		polvos.add(new Polvo(1400,495,20,10));
 		polvos.add(new Polvo(1420,495,20,10));
 		polvos.add(new Polvo(1440,495,20,10));
@@ -54,17 +58,19 @@ public class AreaJuego extends JPanel {
 		enemigos = new ArrayList<Enemigo>();
 		enemigos.add(new Enemigo(1010,700,50,50,0,5,25,1));
 		enemigos.add(new Enemigo(150,100,50,50,-5,5,25,1));
-		
 	}
 
 	public void paint(Graphics g) {
 		super.paint(g);
-		for (Plataforma p : plataformas) {
-			p.dibujar(g);
-		}
-		g.setColor(Color.GREEN);
+		image = new ImageIcon(getClass().getResource("Background.png")).getImage();
+		g.drawImage(image, 0, 0 , 1500 , this.getHeight() ,null);
+		image = new ImageIcon(getClass().getResource("Tiles/fuente.png")).getImage();
+		g.drawImage(image, 500 - personaje.getxScroll(), 656 , 144 , 144 ,null);
 		for (Polvo p : polvos) {
 			if (!p.isPisado())
+			p.dibujar(g);
+		}
+		for (Plataforma p : plataformas) {
 			p.dibujar(g);
 		}
 		for (Enemigo e : enemigos) {

@@ -28,8 +28,8 @@ public class Plataforma extends JPanel {
 	
 	
 	public Plataforma(int x, int y, int w, int h){
-		xscroll=0;
-		yscroll=0;
+		xscroll= 0;
+		yscroll= 0;
 		xOrigen = x;
 		yOrigen = y;
 		this.x = x;
