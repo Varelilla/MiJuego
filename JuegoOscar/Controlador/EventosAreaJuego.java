@@ -42,18 +42,15 @@ public class EventosAreaJuego {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 					
 					personaje.getKeys()[IZQUIERDA] = true;
 				}
-				if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 					personaje.getKeys()[DERECHA] = true;
 				}
-				if (e.getKeyCode() == KeyEvent.VK_UP) {
+				if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_SPACE) {
 					personaje.getKeys()[ARRIBA] = true;
-				}
-				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-					personaje.getKeys()[DASH] = true;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_R) {
 					personaje.getKeys()[RESET] = true;
@@ -63,17 +60,14 @@ public class EventosAreaJuego {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 					personaje.getKeys()[IZQUIERDA] = false;
 				}
-				if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 					personaje.getKeys()[DERECHA] = false;
 				}
-				if (e.getKeyCode() == KeyEvent.VK_UP) {
+				if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_SPACE) {
 					personaje.getKeys()[ARRIBA] = false;
-				}
-				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-					personaje.getKeys()[DASH] = false;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_R) {
 					personaje.getKeys()[RESET] = false;
@@ -83,17 +77,14 @@ public class EventosAreaJuego {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
-				if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 					personaje.getKeys()[IZQUIERDA] = true;
 				}
-				if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 					personaje.getKeys()[DERECHA] = true;
 				}
-				if (e.getKeyCode() == KeyEvent.VK_UP) {
+				if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_SPACE) {
 					personaje.getKeys()[ARRIBA] = true;
-				}
-				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-					personaje.getKeys()[DASH] = true;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_R) {
 					personaje.getKeys()[RESET] = true;
