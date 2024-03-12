@@ -71,7 +71,7 @@ public class JuegoOscar extends JFrame {
 		setBounds(0, 0, 1900, 980);
 
 		setMinimumSize(new Dimension(950, 490));
-		areaJuego = new AreaJuego();
+		areaJuego = new AreaJuego(this);
 		areaJuego.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		pnlCiudad = new PanelMenu(CIUDAD,this);
@@ -89,7 +89,6 @@ public class JuegoOscar extends JFrame {
 		mainmenu.setFocusable(true);
 		mainmenu.requestFocus();
 		eventos = new EventosJuegoOscar(this);
-		setBounds(0, 0, 1600, 900);
 	}
 	
 	public void cambiarTamaño(int x, int y) {
@@ -99,6 +98,7 @@ public class JuegoOscar extends JFrame {
 		pnlLaboratorio.cambiarTamaño(x, y);
 		pnlMansion.cambiarTamaño(x, y);
 		pnlCiudad.cambiarTamaño(x, y);
+		areaJuego.cambiarTamaño(x, y);
 
 	}
 

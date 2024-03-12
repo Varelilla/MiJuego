@@ -214,6 +214,7 @@ public class Personaje {
 				yVel+=gravedad;
 		}
 		if ((xPos+xVel)>= 1400) sumarScrollX();
+        else if ((xPos+xVel)<= 300) sumarScrollX();
 		else xPos+=xVel;
 		yPos+=yVel;
 		tocandoDerecha = false;
@@ -223,19 +224,18 @@ public class Personaje {
 		leftHitBox = new Rectangle(xPos-4,yPos+4,8,ALTO-4);
 		rightHitBox = new Rectangle(xPos+ANCHO -4,yPos+4,8,ALTO-4);
 		botHitBox = new Rectangle(xPos+4,yPos+ALTO-4,ANCHO-4,4);
-		
-		if(yPos>level.getHeight()){
-			restart();
-		}
+		//if(yPos>level.getJuegoOscar().getHeight()){
+		//	restart();
+		//}
 
 		if(xPos<0){
 			xPos=0;
 			xVel=0;
 		}
-		if(xPos>level.getWidth()-ANCHO){
+		/*if(xPos>level.getWidth()-ANCHO){
 			xPos=level.getWidth()-ANCHO;
 			xVel=0;
-		}
+		}*/
 		if(yPos<0){
 			yPos=0; 
 			yVel=0;
@@ -320,6 +320,14 @@ public class Personaje {
 		}
 
 	}
+	
+	public void cambiarHitBox(double relX, double relY) {
+        hitbox = new Rectangle((int)(xPos *relX),(int)(yPos *relY),(int)(ANCHO*relX),(int)(ALTO*relY));
+        leftHitBox = new Rectangle((int)((xPos-4)*relX),(int)((yPos+4)*relY),(int)(8*relX),(int)((ALTO-4)*relY));
+        rightHitBox = new Rectangle((int)((xPos+ANCHO -4)*relX),(int)((yPos+4)*relY),(int)(8*relX),(int)((ALTO-4)*relY));
+        botHitBox = new Rectangle((int)((xPos+4)*relX),(int)((yPos+ALTO-4)*relY),(int)(ANCHO-4*relX),(int)(4*relY));
+        
+    }
 
 	public void cargarImagenes() {
 		sprites = new ArrayList<ArrayList<Image>>();

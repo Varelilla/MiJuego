@@ -42,6 +42,11 @@ public class Plataforma extends JPanel {
 		hitBox = new Rectangle(x,y,ancho,alto);
 		cargarImagenes();
 	}
+	
+	public void cambiarHitBox(double relX, double relY) {
+        hitBox = new Rectangle((int)(x *relX),(int)(y *relY),(int)(ancho*relX),(int)(alto*relY));
+        
+    }
 
 	public Plataforma(int x, int y, int w, int h, boolean muro){
 		xscroll=0;
