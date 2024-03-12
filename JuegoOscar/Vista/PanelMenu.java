@@ -19,11 +19,14 @@ public class PanelMenu extends JPanel{
 	private JuegoOscar juego;
 	private int contador;
 	private boolean mundo;
-	private int x = 400;
-	private int y = 300;
+	private int x;
+	private int y;
+	private int xOriginal = 400;
+	private int yOriginal = 300;
 	private String[] nombres;
 	private EventosPanelMenu eventos;
 	private Font font;
+	private double relX, relY;
 	
 	public PanelMenu(int estado, JuegoOscar juegoOscar) {
 		// TODO Auto-generated constructor stub
@@ -32,6 +35,10 @@ public class PanelMenu extends JPanel{
 		contador = 0;
 		niveles = new Image[6];
 		font = null;
+		x = 400;
+		y = 340;
+		relX = 1;
+		relY = 1;
 		try {
             ClassLoader classLoader = PanelMenu.class.getClassLoader();
             InputStream is = classLoader.getResourceAsStream("PressStart2P-Regular.ttf");
@@ -47,6 +54,8 @@ public class PanelMenu extends JPanel{
 			nombres = new String[]{"Bosque", "Laboratorio", "Mansion", "Ciudad", "Controles", "Salir"};
 			x = juego.getWidth()/2 - 150;
 			y = juego.getHeight()/2 - 200;
+			xOriginal = x;
+			yOriginal = y;
 			break;
 		case JuegoOscar.CONTROLS:
 			img = new ImageIcon(getClass().getResource("menu/mainMenu.png")).getImage();
@@ -54,6 +63,8 @@ public class PanelMenu extends JPanel{
 			contador = -1;
 			x = juego.getWidth()/2 - 300;
 			y = juego.getHeight()/2 - 200;
+			xOriginal = x;
+			yOriginal = y;
 			nombres = new String[]{"Izq, A: Moverse hacia la izquierda.", 
 					"Drch, D: Moverse hacia la derecha.", 
 					"Arriba, Esp, W: Salto y doble salto.", 
@@ -96,54 +107,61 @@ public class PanelMenu extends JPanel{
 		
 	}
 	
+	public void cambiarTamaño(int x, int y) {
+		relX = (double) x/1900;
+		relY = (double) y/980;
+		this.x = (int)(xOriginal * relX);
+		this.y = (int)(yOriginal * relY);
+		this.repaint();
+	}
+	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(img, 0, 0,juego.getWidth(),juego.getHeight(), null);
 		if(mundo){
-			g.drawImage(marcador,x + 140 + ((contador% 3) * 400),y - 70 + ((contador / 3)* 250),null);
+			g.drawImage(marcador,x + (int)(140*relX) + ((contador% 3) * (int)(400*relX)),y - (int)(70*relY) + ((contador / 3)* (int)(250*relY)),null);
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setStroke(new BasicStroke(3));
 			g.setColor(Color.WHITE);
-			g.drawRect(x-2 + ((contador% 3) * 400),y-2 + ((contador / 3)* 250),303,153);
+			g.drawRect(x-2 + ((contador% 3) * (int)(400)),y-2 + ((contador / 3)* (int)(250*relY)),(int)(303*relX),(int)(153*relY));
 			for (int i = 0; i < niveles.length; i++) {
-				g.drawImage(niveles[i], x + ((i % 3) * 400), y + ((i / 3) * 250),300,150, null);
-				
+				g.drawImage(niveles[i], x + ((i % 3) * (int)(400*relX)), y + ((i / 3) * (int)(250*relY)),(int)(300*relX),(int)(150*relY), null);	
 				g2d.setColor(new Color(0, 0, 0, 100));
-                g2d.fillRect(x + 10 + ((i % 3) * 400), y + 100 + ((i / 3) * 250), 160, 40);
+                g2d.fillRect(x + 10 + ((i % 3) * (int)(400*relX)),y + (int)(100*relY) + ((i / 3) * (int)(250*relY)), (int)(160*relX), (int)(40*relY));
                 g.setColor(Color.WHITE);
-                g.setFont(font.deriveFont(Font.BOLD,20));
-                if(i==5) g.drawString("Volver", x + 15 + ((i % 3) * 400), y + 130 + ((i / 3) * 250));
-                else g.drawString("Nivel " + i, x + 15 + ((i % 3) * 400), y + 130 + ((i / 3) * 250));
+                g.setFont(font.deriveFont(Font.BOLD,(int)(20*relX)));
+                if(i==5) g.drawString("Volver", x + (int)(15*relX) + ((i % 3) * (int)(400*relX)), y + (int)(130*relY) + ((i / 3) * (int)(250*relY)));
+                else g.drawString("Nivel " + i, x + (int)(15*relX) + ((i % 3) * (int)(400*relX)), y + (int)(130*relY) + ((i / 3) * (int)(250*relY)));
 			}
 
 		} else if (contador > -1) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setStroke(new BasicStroke(3));
 			g.setColor(Color.WHITE);
-			g.drawRect(x-2,y-2 + (contador* 85),318,83);
+			g.drawRect(x-2,y-2 + (int)((contador* 85) * relY),(int)(318 * relX),(int)(83 * relY));
 			for (int i = 0; i < 6; i++) {
 				g2d.setColor(new Color(0, 0, 0, 100));
-				g2d.fillRect(x, y + (i * 85), 315, 80);
+				g2d.fillRect(x, y + (int)((i * 85) * relY), (int)(315 * relX),(int) (80 * relY));
 				g.setColor(Color.WHITE);
-				g.setFont(font.deriveFont(Font.BOLD, 25));
+				g.setFont(font.deriveFont(Font.BOLD, (int)(25 * relX)));
 				FontMetrics metrics = g.getFontMetrics();
 				int x = (getWidth() - metrics.stringWidth(nombres[i])) / 2; // Centra horizontalmente
-				g.drawString(nombres[i], x, y + 55 + (i * 85));
+				g.drawString(nombres[i], x, y + (int)(55*relY) + (int)((i * 85) *relY));
 			}
 		} else {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setColor(new Color(0, 0, 0, 200));
-			g2d.fillRect(x, y, 600, 540);
+			g2d.fillRect(x, y, (int)(600*relX), (int)(540*relY));
 			String[] instrucciones = nombres[5].split("  ");
 			for (int i = 0; i < 6; i++) {
 				g.setColor(Color.WHITE);
-				g.setFont(font.deriveFont(Font.PLAIN, 13));
+				g.setFont(font.deriveFont(Font.PLAIN, (int)(13*relX)));
 				if (i == 5) {
 					for (int j = 0; j < instrucciones.length; j++) {
-						g.drawString(instrucciones[j], x + 20, y + 100 + (i * 45)+(j*20));
+						g.drawString(instrucciones[j], x + (int)(20*relX), y + (int)(100*relY) + (int)((i * 45)*relY)+(int)((j*20)*relY));
 					}
 				} else {
-					g.drawString(nombres[i], x + 20, y + 50 + (i * 45));
+					g.drawString(nombres[i], x + (int)(20*relY), y + (int)(50*relY) + (int)((i * 45)*relY));
 				}
 
 			}

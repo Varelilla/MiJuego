@@ -59,6 +59,7 @@ public class AreaJuego extends JPanel {
 		enemigos.add(new Enemigo(1010,700,50,50,0,5,25,1));
 		enemigos.add(new Enemigo(150,100,50,50,-5,5,25,1));
 	}
+	
 
 	public void paint(Graphics g) {
 		super.paint(g);

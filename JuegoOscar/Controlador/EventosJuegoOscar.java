@@ -1,10 +1,15 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 
 public class EventosJuegoOscar {
+	private static final double ASPECT_RATIO = 1900 / 980;
 	private JuegoOscar juego;
+	private int xAnterior, yAnterior;
 	
 	public EventosJuegoOscar(JuegoOscar juegoOscar) {
 		// TODO Auto-generated constructor stub
@@ -13,65 +18,25 @@ public class EventosJuegoOscar {
 	}
 
 	public void registrarEventos() {
-		juego.getBtnBosque().addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				juego.getContentPane().removeAll();
-				juego.getContentPane().add(juego.getPnlBosque(), BorderLayout.CENTER);
-				juego.getPnlBosque().requestFocus();
-				juego.revalidate();
-				juego.repaint();
-			}
-		});
-
-		juego.getBtnLaboratorio().addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				juego.getContentPane().removeAll();
-				juego.getContentPane().add(juego.getPnlLaboratorio(), BorderLayout.CENTER);
-				juego.getPnlLaboratorio().requestFocus();
-				juego.revalidate();
-				juego.repaint();
-			}
-		});
 		
-		juego.getBtnMansion().addActionListener(new ActionListener() {
+		juego.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Dimension newSize = e.getComponent().getSize();
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				juego.getContentPane().removeAll();
-				juego.getContentPane().add(juego.getPnlMansion(), BorderLayout.CENTER);
-				juego.getPnlMansion().requestFocus();
-				juego.revalidate();
-				juego.repaint();
-			}
-		});
+                // Calcula las nuevas dimensiones x e y manteniendo la proporción
+                int newX = (int) newSize.getWidth();
+                int newY = (int) newSize.getHeight();
+
+                // Actualiza el tamaño de la ventana con las nuevas dimensiones
+                juego.cambiarTamaño(newX, newY);
+
+                // Agrega cualquier lógica adicional aquí que quieras ejecutar cuando la ventana se redimensione
+            }
+        });
 		
-		juego.getBtnCiudad().addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				juego.getContentPane().removeAll();
-				juego.getContentPane().add(juego.getPnlCiudad(), BorderLayout.CENTER);
-				juego.getPnlCiudad().requestFocus();
-				juego.revalidate();
-				juego.repaint();
-			}
-		});
 		
-		juego.getBtnControles().addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				juego.getContentPane().removeAll();
-				juego.getContentPane().add(juego.getPnlControles(), BorderLayout.CENTER);
-				juego.getPnlControles().requestFocus();
-				juego.revalidate();
-				juego.repaint();
-			}
-		});
 		
 	}
 

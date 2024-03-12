@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 public class Polvo extends Plataforma{
 	private boolean pisado;
 	private Image image;
+
 	
 	public Polvo(int x, int y, int w, int h) {
 		super(x, y, w, h);

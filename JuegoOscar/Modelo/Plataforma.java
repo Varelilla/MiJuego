@@ -25,6 +25,7 @@ public class Plataforma extends JPanel {
 	private BufferedImage bimage;
 	private ArrayList<Image> imagenes;
 	private boolean muro = false;
+	private double relX, relY;
 	
 	
 	public Plataforma(int x, int y, int w, int h){
@@ -32,6 +33,8 @@ public class Plataforma extends JPanel {
 		yscroll= 0;
 		xOrigen = x;
 		yOrigen = y;
+		relX = 1;
+		relY = 1;
 		this.x = x;
 		this.y = y;
 		ancho = w;
@@ -39,7 +42,7 @@ public class Plataforma extends JPanel {
 		hitBox = new Rectangle(x,y,ancho,alto);
 		cargarImagenes();
 	}
-	
+
 	public Plataforma(int x, int y, int w, int h, boolean muro){
 		xscroll=0;
 		yscroll=0;

@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -39,8 +40,9 @@ public class JuegoOscar extends JFrame {
 	private PanelMenu pnlCiudad;
 	private PanelMenu pnlBosque;
 	private PanelMenu pnlLaboratorio;
-	private JPanel pnlControles;
+	private PanelMenu pnlControles;
 	private PanelMenu mainmenu;
+	private EventosJuegoOscar eventos;
 
 	/**
 	 * Launch the application.
@@ -64,14 +66,14 @@ public class JuegoOscar extends JFrame {
 	 */
 	public JuegoOscar() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
-		setUndecorated(true);
-		setBounds(0, 0, 1900, 1080);
-		setResizable(false);
+		//setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//setUndecorated(true);
+		setBounds(0, 0, 1900, 980);
+
+		setMinimumSize(new Dimension(950, 490));
 		areaJuego = new AreaJuego();
 		areaJuego.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-		
 		pnlCiudad = new PanelMenu(CIUDAD,this);
 		pnlMansion = new PanelMenu(MANSION,this);
 		pnlBosque = new PanelMenu(BOSQUE,this);
@@ -86,7 +88,18 @@ public class JuegoOscar extends JFrame {
 		//setContentPane(areaJuego);
 		mainmenu.setFocusable(true);
 		mainmenu.requestFocus();
-		
+		eventos = new EventosJuegoOscar(this);
+		setBounds(0, 0, 1600, 900);
+	}
+	
+	public void cambiarTamaño(int x, int y) {
+		mainmenu.cambiarTamaño(x,y);
+		pnlControles.cambiarTamaño(x,y);
+		pnlBosque.cambiarTamaño(x, y);
+		pnlLaboratorio.cambiarTamaño(x, y);
+		pnlMansion.cambiarTamaño(x, y);
+		pnlCiudad.cambiarTamaño(x, y);
+
 	}
 
 	public JButton getBtnBosque() {
