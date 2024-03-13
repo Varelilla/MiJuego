@@ -65,19 +65,19 @@ public class Plataforma extends JPanel {
 	
 	public void cargarImagenes() {
 		imagenes = new ArrayList<Image>();
-		image = new ImageIcon(getClass().getResource("Tiles/Tile_01.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/1.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("Tiles/Tile_Girado1.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/4.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("Tiles/Tile_03.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/3.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("Tiles/Tile_Girado2.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/6.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("Tiles/Tile_02.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/2.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("Tiles/Tile_Girado3.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/16.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("Tiles/Tile_52.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/14.png")).getImage();
 		imagenes.add(image);
 	}
 

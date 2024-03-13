@@ -83,6 +83,8 @@ public class AreaJuego extends JPanel {
 		polvos.add(new Polvo(1480,495,20,10));
 		polvos.add(new Polvo(1480,495,20,10));
 		polvos.add(new Polvo(2400,695,20,10));
+		obstaculos = new ArrayList<Obstaculo>();
+		obstaculos.add(new Obstaculo(1000, 850, 200, 100));
 		enemigos = new ArrayList<Enemigo>();
 		enemigos.add(new Enemigo(1010,700,50,50,0,5,25,1));
 		enemigos.add(new Enemigo(150,100,50,50,-5,5,25,1));
@@ -142,6 +144,11 @@ public class AreaJuego extends JPanel {
 	    for (Enemigo e : enemigos) {
 	        e.dibujar(g2d); // Utilizar g2d en lugar de g
 	    }
+	    
+	 // Dibujar obstaculos
+	    for (Obstaculo o : obstaculos) {
+	        o.dibujar(g2d); // Utilizar g2d en lugar de g
+	    }
 
 	    // Dibujar personaje
 	    personaje.dibujar(g2d); // Utilizar g2d en lugar de g
@@ -196,6 +203,14 @@ public class AreaJuego extends JPanel {
 
 	public void setJuegoOscar(JuegoOscar juegoOscar) {
 		this.juegoOscar = juegoOscar;
+	}
+
+	public ArrayList<Obstaculo> getObstaculos() {
+		return obstaculos;
+	}
+
+	public void setObstaculos(ArrayList<Obstaculo> obstaculos) {
+		this.obstaculos = obstaculos;
 	}
 
 }

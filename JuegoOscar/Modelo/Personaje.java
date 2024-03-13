@@ -55,6 +55,7 @@ public class Personaje {
     private ArrayList<Plataforma> plataformas;
     private ArrayList<Polvo> polvos;
     private ArrayList<Enemigo> enemigos;
+    private ArrayList<Obstaculo> obstaculos;
     private ArrayList<ArrayList<Image>> sprites;
     private int frame = 0;
     private boolean dobleSalto = true;
@@ -81,8 +82,9 @@ public class Personaje {
 		plataformas = level.getPlataformas();
 		polvos = level.getPolvos();
 		enemigos = level.getEnemigos();
+		obstaculos = level.getObstaculos();
 		cargarImagenes();
-		hitbox = new Rectangle(xPos,yPos,ANCHO,ALTO);
+		hitbox = new Rectangle(xPos +5,yPos+5,ANCHO-10,ALTO-10);
 		leftHitBox = new Rectangle(xPos-4,yPos+4,8,ALTO-4);
 		rightHitBox = new Rectangle(xPos+ANCHO -4,yPos+4,8,ALTO-4);
 		botHitBox = new Rectangle(xPos,yPos+ALTO-4,20,4);
@@ -220,7 +222,7 @@ public class Personaje {
 		tocandoDerecha = false;
 		tocandoIzquierda = false;
 		tocandoSuelo=false;
-		hitbox = new Rectangle(xPos,yPos,ANCHO,ALTO );
+		hitbox = new Rectangle(xPos+5,yPos+5,ANCHO-10,ALTO-10 );
 		leftHitBox = new Rectangle(xPos-4,yPos+4,8,ALTO-4);
 		rightHitBox = new Rectangle(xPos+ANCHO -4,yPos+4,8,ALTO-4);
 		botHitBox = new Rectangle(xPos+4,yPos+ALTO-4,ANCHO-4,4);
@@ -315,14 +317,19 @@ public class Personaje {
 			if(hitbox.intersects(rect) || leftHitBox.intersects(rect) || rightHitBox.intersects(rect) || botHitBox.intersects(rect)){
 				restart();
 			}
-			
-			
+		}
+		for (Obstaculo p : obstaculos) {
+			p.setXscroll(xScroll);
+			Rectangle rect = p.getHitBox();
+			if(hitbox.intersects(rect) || leftHitBox.intersects(rect) || rightHitBox.intersects(rect) || botHitBox.intersects(rect)){
+				restart();
+			}
 		}
 
 	}
 	
 	public void cambiarHitBox(double relX, double relY) {
-        hitbox = new Rectangle((int)(xPos *relX),(int)(yPos *relY),(int)(ANCHO*relX),(int)(ALTO*relY));
+        hitbox = new Rectangle((int)((xPos+5) *relX),(int)((yPos+5) *relY),(int)((ANCHO-10)*relX),(int)((ALTO-10)*relY));
         leftHitBox = new Rectangle((int)((xPos-4)*relX),(int)((yPos+4)*relY),(int)(8*relX),(int)((ALTO-4)*relY));
         rightHitBox = new Rectangle((int)((xPos+ANCHO -4)*relX),(int)((yPos+4)*relY),(int)(8*relX),(int)((ALTO-4)*relY));
         botHitBox = new Rectangle((int)((xPos+4)*relX),(int)((yPos+ALTO-4)*relY),(int)(ANCHO-4*relX),(int)(4*relY));
