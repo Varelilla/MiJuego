@@ -2,18 +2,29 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class AreaJuego extends JPanel {
 	private Personaje personaje;
 	private EventosAreaJuego eventos;
-	private ArrayList<Plataforma> plataformas;
-	private ArrayList<Polvo> polvos;
-	private ArrayList<Enemigo> enemigos;
-	private ArrayList<Obstaculo> obstaculos;
+	private ArrayList<Plataforma> plataformas = new ArrayList<Plataforma>();
+	private ArrayList<Polvo> polvos = new ArrayList<Polvo>();
+	private ArrayList<Enemigo> enemigos = new ArrayList<Enemigo>();
+	private ArrayList<Obstaculo> obstaculos = new ArrayList<Obstaculo>();
 	private int xOriginal = 1900, yOriginal = 980;
 	private double relX = 1,relY = 1;
 	private Image image;
@@ -28,7 +39,8 @@ public class AreaJuego extends JPanel {
 		setBackground(Color.gray);
 		setFocusable(true);
 		setRequestFocusEnabled(true);
-		crearPlataformas();
+		//crearPlataformas();
+		cargarNivel("/niveles/nivel2.tmx");
 		personaje = new Personaje(this, 300, 600);
 		eventos = new EventosAreaJuego(this);
 	}
@@ -57,7 +69,7 @@ public class AreaJuego extends JPanel {
 	
 	
 	public void crearPlataformas() {
-		plataformas = new ArrayList<Plataforma>();
+		
 		plataformas.add(new Plataforma(0, 900, 200, 100));
 		plataformas.add(new Plataforma(200, 800, 800, 100));
 		plataformas.add(new Plataforma(1200, 800, 800, 100));
@@ -156,6 +168,69 @@ public class AreaJuego extends JPanel {
         g2d.dispose();
         
 	}
+	
+	public void cargarNivel(String nombreArchivo) {
+		try {
+		    File file = new File(getClass().getResource(nombreArchivo).getFile());
+		    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		    DocumentBuilder builder = factory.newDocumentBuilder();
+		    Document doc = builder.parse(file);
+		    doc.getDocumentElement().normalize();
+
+		    NodeList layerList = doc.getElementsByTagName("layer");
+
+		    for (int l = 0; l < layerList.getLength(); l++) {
+		        Node layerNode = layerList.item(l);
+		        if (layerNode.getNodeType() == Node.ELEMENT_NODE) {
+		            Element layerElement = (Element) layerNode;
+		            NodeList dataNodes = layerElement.getElementsByTagName("data");
+		            if (dataNodes.getLength() > 0) {
+		                Element dataElement = (Element) dataNodes.item(0);
+		                String encoding = dataElement.getAttribute("encoding");
+		                String data = dataElement.getTextContent().trim();
+
+		                if (encoding.equals("csv")) {
+		                    String[] rows = data.split("\n");
+		                    for (int y = 0; y < rows.length; y++) {
+		                        String[] tiles_data = rows[y].split(",");
+		                        for (int x = 0; x < tiles_data.length; x++) {
+		                            int tileValue = Integer.parseInt(tiles_data[x].trim());
+		                            int real_x = x;
+		                            int real_y = y;
+
+		                            // Check if the current tile is part of a group
+		                            if (tileValue == 1 || tileValue == 2) {
+		                                // Calculate the width of the platform or obstacle
+		                                int width = 1;
+		                                while (x + width < tiles_data.length && Integer.parseInt(tiles_data[x + width].trim()) == tileValue) {
+		                                    width++;
+		                                }
+
+		                                // Adjust the width of the current tile group
+		                                x += width - 1;
+
+		                                // Create a platform or obstacle based on the tile value and width
+		                                if (tileValue == 1) {
+		                                    System.out.println("Plataforma en (" + real_x + ", " + real_y + ") con ancho " + width);
+		                                    plataformas.add(new Plataforma(real_x * 100, real_y * 100 - 3000, width * 100, 100));
+		                                    // Generate a platform at position (real_x, real_y) with extended width
+		                                } else if (tileValue == 2) {
+		                                    System.out.println("Obstáculo en (" + real_x + ", " + real_y + ") con ancho " + width);
+		                                    obstaculos.add(new Obstaculo(real_x * 100, (real_y * 100) - 3000, width * 100, 100));
+		                                    // Generate an obstacle at position (real_x, real_y) with extended width
+		                                }
+		                            }
+		                        }
+		                    }
+		                }
+		            }
+		        }
+		    }
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+    }
+	
 
 	public Personaje getPersonaje() {
 		return personaje;

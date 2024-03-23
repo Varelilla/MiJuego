@@ -39,6 +39,9 @@ public class Plataforma extends JPanel {
 		this.y = y;
 		ancho = w;
 		alto = h;
+		if (ancho<=100) {
+			muro = true;
+		}
 		hitBox = new Rectangle(x,y,ancho,alto);
 		cargarImagenes();
 	}
@@ -169,6 +172,8 @@ public class Plataforma extends JPanel {
 
 	public void setYscroll(int yscroll) {
 		this.yscroll = yscroll;
+		y = yOrigen - yscroll;
+		hitBox = new Rectangle(x, y, ancho, alto);
 	}
 	
 	public int getTop(){

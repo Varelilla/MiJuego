@@ -218,7 +218,10 @@ public class Personaje {
 		if ((xPos+xVel)>= 1400) sumarScrollX();
         else if ((xPos+xVel)<= 300) sumarScrollX();
 		else xPos+=xVel;
-		yPos+=yVel;
+		if ((yPos + yVel) >= 600) sumarScrollY();
+		else if ((yPos + yVel)< 200) sumarScrollY();
+        else yPos+=yVel;
+		
 		tocandoDerecha = false;
 		tocandoIzquierda = false;
 		tocandoSuelo=false;
@@ -251,6 +254,10 @@ public class Personaje {
 		plataformaIzquierda-=xVel;
 		plataformaDerecha-=xVel;
 	}
+	
+	public void sumarScrollY() {
+		yScroll+=yVel;
+	}
 
 	public void checkCollisions(){
 		vivo=true;
@@ -259,6 +266,7 @@ public class Personaje {
 		for(int i=0;i<tmplist.size();i++){
 			Plataforma temp = tmplist.get(i);	
 			temp.setXscroll(xScroll);
+			temp.setYscroll(yScroll);
 			if(hitbox.intersects(temp.getHitBox())){
 					if (Math.abs(xPos+ANCHO-temp.getLeft())<=xVel+5 && yPos>temp.getTop()-ALTO && yPos<temp.getBottom() && rightHitBox.intersects(temp.getHitBox()))
 					{
@@ -304,6 +312,7 @@ public class Personaje {
 		}
 		for (Polvo p : polvos) {
 			p.setXscroll(xScroll);
+			p.setYscroll(yScroll);
 			Rectangle rect = new Rectangle(p.getX(),p.getY()-5,p.getAncho(),p.getAlto());
 			if(hitbox.intersects(rect) || leftHitBox.intersects(rect) || rightHitBox.intersects(rect) || botHitBox.intersects(rect)){
 				p.setPisado(true);
@@ -312,6 +321,7 @@ public class Personaje {
 		}
 		for (Enemigo p : enemigos) {
 			p.setXscroll(xScroll);
+			p.setYscroll(yScroll);
 			p.hitBoxEnemigo();
 			Rectangle rect = p.getHitBox();
 			if(hitbox.intersects(rect) || leftHitBox.intersects(rect) || rightHitBox.intersects(rect) || botHitBox.intersects(rect)){
@@ -320,6 +330,7 @@ public class Personaje {
 		}
 		for (Obstaculo p : obstaculos) {
 			p.setXscroll(xScroll);
+			p.setYscroll(yScroll);
 			Rectangle rect = p.getHitBox();
 			if(hitbox.intersects(rect) || leftHitBox.intersects(rect) || rightHitBox.intersects(rect) || botHitBox.intersects(rect)){
 				restart();
@@ -478,10 +489,15 @@ public class Personaje {
 		estadoActual=0;
 		enAire = true;
 		xScroll = 0;
-		for (Plataforma p : plataformas) p.setXscroll(0);
+		yScroll = 0;
+		for (Plataforma p : plataformas) {
+			p.setXscroll(0);
+			p.setYscroll(0);
+		}
 		for (Polvo p: polvos) {
 			p.setPisado(false);
 			p.setXscroll(0);
+			p.setYscroll(0);
 		}
 	}
 
