@@ -71,7 +71,7 @@ public class JuegoOscar extends JFrame {
 		setBounds(0, 0, 1900, 980);
 
 		setMinimumSize(new Dimension(950, 490));
-		areaJuego = new AreaJuego(this);
+		areaJuego = new AreaJuego(0,this);
 		areaJuego.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		pnlCiudad = new PanelMenu(CIUDAD,this);

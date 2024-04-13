@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -6,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -29,11 +32,29 @@ public class AreaJuego extends JPanel {
 	private double relX = 1,relY = 1;
 	private Image image;
 	private JuegoOscar juegoOscar;
+	private int minutos;
+    private int segundos;
+    private int decimasSegundo;
+    private int objetosRecogidos;
+    private int totalObjetos =  10;
+    private long tiempoInicio = System.currentTimeMillis();
+    private Font font;
+    private Polvo finalPolvo;
+    private boolean finalizado = false;
+    private boolean esperandoConfirmacion = false;
+    private int botonSeleccionado = 0;
+    private PanelMenu pnlMenu;
+    private String record;
+    private String rutarRecord;
+    private int nivelPanelAnterior;
+    
+    
 
 	/**
 	 * Create the panel.
 	 */
-	public AreaJuego(JuegoOscar juegoOscar) {
+	public AreaJuego(int contador,JuegoOscar juegoOscar) {
+		nivelPanelAnterior = contador;
 		this.juegoOscar = juegoOscar;
 		setBounds(0, 0, 300, 100);
 		setBackground(Color.gray);
@@ -42,6 +63,14 @@ public class AreaJuego extends JPanel {
 		//crearPlataformas();
 		cargarNivel("/niveles/nivel2.tmx");
 		personaje = new Personaje(this, 300, 600);
+		try {
+            ClassLoader classLoader = PanelMenu.class.getClassLoader();
+            InputStream is = classLoader.getResourceAsStream("PressStart2P-Regular.ttf");
+            font = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
+		objetosRecogidos = 5;
 		eventos = new EventosAreaJuego(this);
 	}
 	
@@ -67,107 +96,120 @@ public class AreaJuego extends JPanel {
 	    personaje.cambiarHitBox(relX,relY);
 	}
 	
-	
-	public void crearPlataformas() {
-		
-		plataformas.add(new Plataforma(0, 900, 200, 100));
-		plataformas.add(new Plataforma(200, 800, 800, 100));
-		plataformas.add(new Plataforma(1200, 800, 800, 100));
-		plataformas.add(new Plataforma(1400, 700, 100, 100));
-		plataformas.add(new Plataforma(1700, 600, 100, 100));
-		plataformas.add(new Plataforma(2000, 700, 800, 100));
-		plataformas.add(new Plataforma(1400, 500, 100, 100));
-		plataformas.add(new Plataforma(-50, 0, 100, 900,true));
-		polvos = new ArrayList<Polvo>();
-		polvos.add(new Polvo(45,1,10,20));
-		polvos.add(new Polvo(45,20,10,20));
-		polvos.add(new Polvo(45,40,10,20));
-		polvos.add(new Polvo(45,60,10,20));
-		polvos.add(new Polvo(45,80,10,20));
-		polvos.add(new Polvo(45,100,10,20));
-		polvos.add(new Polvo(45,120,10,20));
-		polvos.add(new Polvo(45,140,10,20));
-		polvos.add(new Polvo(1400,495,20,10));
-		polvos.add(new Polvo(1420,495,20,10));
-		polvos.add(new Polvo(1440,495,20,10));
-		polvos.add(new Polvo(1460,495,20,10));
-		polvos.add(new Polvo(1480,495,20,10));
-		polvos.add(new Polvo(1480,495,20,10));
-		polvos.add(new Polvo(1480,495,20,10));
-		polvos.add(new Polvo(2400,695,20,10));
-		obstaculos = new ArrayList<Obstaculo>();
-		obstaculos.add(new Obstaculo(1000, 850, 200, 100));
-		enemigos = new ArrayList<Enemigo>();
-		enemigos.add(new Enemigo(1010,700,50,50,0,5,25,1));
-		enemigos.add(new Enemigo(150,100,50,50,-5,5,25,1));
-	}
-	
-
-	/*public void paint(Graphics g) {
-		
-		super.paint(g);
-		image = new ImageIcon(getClass().getResource("Background.png")).getImage();
-		g.drawImage(image, 0, 0 , 1500 , this.getHeight() ,null);
-		image = new ImageIcon(getClass().getResource("Tiles/fuente.png")).getImage();
-		g.drawImage(image, 500 - personaje.getxScroll(), 656 , 144 , 144 ,null);
-		for (Polvo p : polvos) {
-			if (!p.isPisado())
-			p.dibujar(g);
-		}
-		for (Plataforma p : plataformas) {
-			p.dibujar(g);
-		}
-		for (Enemigo e : enemigos) {
-			e.dibujar(g);
-		}
-		personaje.dibujar(g);
-		
-	}*/
-	
 	public void paint(Graphics g) {
 
-	    Graphics2D g2d = (Graphics2D) g.create();
-	    super.paint(g2d);
-	    // Aplicar transformación de escala
-	    g2d.scale(relX, relY);
+		Graphics2D g2d = (Graphics2D) g.create();
+		super.paint(g2d);
+		// Aplicar transformación de escala
+		g2d.scale(relX, relY);
 
-	    // Dibujar el fondo
-	    Image image = new ImageIcon(getClass().getResource("Background.png")).getImage();
-	    for (int i = 0; i < 3; i ++) {
-	    	g2d.drawImage(image, 0 + (i * 1500), 0 , 1500 , 980 ,null);
-	    }
+		// Dibujar el fondo
+		Image image = new ImageIcon(getClass().getResource("Background.png")).getImage();
+		for (int i = 0; i < 3; i ++) {
+			g2d.drawImage(image, 0 + (i * 1500), 0 , 1500 , 980 ,null);
+		}
 
-	    // Dibujar fuente
-	    image = new ImageIcon(getClass().getResource("Tiles/fuente.png")).getImage();
-	    g2d.drawImage(image, (500 - personaje.getxScroll()), 656 , 144 , 144 ,null);
+		// Dibujar fuente
+		image = new ImageIcon(getClass().getResource("Tiles/fuente.png")).getImage();
+		g2d.drawImage(image, (500 - personaje.getxScroll()), 656 , 144 , 144 ,null);
 
-	    // Dibujar polvos
-	    for (Polvo p : polvos) {
-	        if (!p.isPisado())
-	            p.dibujar(g2d); // Utilizar g2d en lugar de g
-	    }
+		// Dibujar polvos
+		for (Polvo p : polvos) {
+			if (!p.isPisado())
+				p.dibujar(g2d); // Utilizar g2d en lugar de g
+		}
 
-	    // Dibujar plataformas
-	    for (Plataforma p : plataformas) {
-	        p.dibujar(g2d); // Utilizar g2d en lugar de g
-	    }
+		finalPolvo.dibujar(g2d);
 
-	    // Dibujar enemigos
-	    for (Enemigo e : enemigos) {
-	        e.dibujar(g2d); // Utilizar g2d en lugar de g
-	    }
-	    
-	 // Dibujar obstaculos
-	    for (Obstaculo o : obstaculos) {
-	        o.dibujar(g2d); // Utilizar g2d en lugar de g
-	    }
+		// Dibujar plataformas
+		for (Plataforma p : plataformas) {
+			p.dibujar(g2d); // Utilizar g2d en lugar de g
+		}
 
-	    // Dibujar personaje
-	    personaje.dibujar(g2d); // Utilizar g2d en lugar de g
+		// Dibujar enemigos
+		for (Enemigo e : enemigos) {
+			e.dibujar(g2d); // Utilizar g2d en lugar de g
+		}
 
-        g2d.dispose();
-        
+		// Dibujar obstaculos
+		for (Obstaculo o : obstaculos) {
+			o.dibujar(g2d); // Utilizar g2d en lugar de g
+		}
+
+		// Dibujar personaje
+		personaje.dibujar(g2d); // Utilizar g2d en lugar de g
+
+
+		// Dibuja los elementos del juego
+
+		// Dibuja la información del nivel
+		g2d.setColor(new Color(0, 0, 0, 128));
+		g2d.fillRect(0, 0, 3000, 50);
+		
+		// Dibujamos el record y su puntuacion si este nivel ya ha sido jugado
+		if (!record.equals("")) {
+			g2d.setColor(Color.WHITE);
+			g2d.setFont(font.deriveFont(Font.PLAIN, 30));
+			g2d.drawString("Record:" + record, 10, 42);
+			g2d.drawImage(new ImageIcon(getClass().getResource(rutarRecord)).getImage(), 470, 5, 40, 40, null);
+		}
+
+		// Establece la fuente y el tamaño del texto
+		g2d.setFont(font.deriveFont(Font.PLAIN, 30)); 
+		g2d.setColor(Color.WHITE);
+		g2d.drawString(String.format("%02d:%02d:%02d", minutos, segundos, decimasSegundo),1630, 42);
+		g2d.drawString(objetosRecogidos + "/" + totalObjetos, 1430, 42);
+		if (finalizado) {
+			eventos.getReloj().stop();
+			mostrarAnimacionFinal(g);
+			if (!esperandoConfirmacion) {
+				long tiempoActual = System.currentTimeMillis();
+				long tiempoTranscurrido = tiempoActual - tiempoInicio;
+				eventos.setTiempoActual(System.currentTimeMillis());
+				eventos.setTiempoRestante(tiempoTranscurrido);
+				eventos.getRelojAnimacion().setDelay((int) (2000/eventos.getTiempoRestante()));
+				eventos.getRelojAnimacion().start();
+				esperandoConfirmacion = true;
+			}
+		} 
+
+		g2d.dispose();
+
 	}
+	
+	public void comprobarRecord(String puntuacion, long tiempoFinal) {
+		// Esta funcion comprueba si la puntuacion recibida es mayor que la que teniamos, y en ese caso cambia los valores tanto del propia areaJuego, como del panelMenu
+		int minutos = (int) (tiempoFinal / 60000);
+		int segundos = (int) ((tiempoFinal / 1000) % 60);
+		int decimas = (int) ((tiempoFinal / 10) % 100);
+
+		String tiempoFormateado = String.format("%02d:%02d:%02d", minutos, segundos, decimas);
+		if (record.equals("")) {
+			
+			record = tiempoFormateado;
+			rutarRecord = puntuacion;
+			pnlMenu.getTiempos()[nivelPanelAnterior] = tiempoFormateado;
+			pnlMenu.getPuntuaciones()[nivelPanelAnterior] = puntuacion;
+		} else {
+			if (puntuacion.compareTo(record) > 0) {
+				record = tiempoFormateado;
+				rutarRecord = puntuacion;
+				pnlMenu.getTiempos()[nivelPanelAnterior] = tiempoFormateado;
+				pnlMenu.getPuntuaciones()[nivelPanelAnterior] = puntuacion;
+			}
+		}
+		
+	}
+
+	public void actualizarCronometro() {
+        long tiempoActual = System.currentTimeMillis();
+        long tiempoTranscurrido = tiempoActual - tiempoInicio;
+
+        // Calcula minutos, segundos y décimas de segundo
+        minutos = (int) (tiempoTranscurrido / 60000);
+        segundos = (int) ((tiempoTranscurrido / 1000) % 60);
+        decimasSegundo = (int) ((tiempoTranscurrido / 10) % 100);
+    }
 	
 	public void cargarNivel(String nombreArchivo) {
 		try {
@@ -211,15 +253,19 @@ public class AreaJuego extends JPanel {
 
 		                                // Create a platform or obstacle based on the tile value and width
 		                                if (tileValue == 1) {
-		                                    System.out.println("Plataforma en (" + real_x + ", " + real_y + ") con ancho " + width);
 		                                    plataformas.add(new Plataforma(real_x * 100, real_y * 100 - 3000, width * 100, 100));
 		                                    // Generate a platform at position (real_x, real_y) with extended width
 		                                } else if (tileValue == 2) {
-		                                    System.out.println("Obstáculo en (" + real_x + ", " + real_y + ") con ancho " + width);
 		                                    obstaculos.add(new Obstaculo(real_x * 100, (real_y * 100) - 3000, width * 100, 100));
 		                                    // Generate an obstacle at position (real_x, real_y) with extended width
-		                                }
-		                            }
+		                                } 
+		                            } else if (tileValue == 3 || tileValue == 4) {
+                                        plataformas.add(new Plataforma(real_x * 100, real_y * 100 - 3000, 100, 100, tileValue));
+	                                } else if (tileValue == 9) {
+	                                	finalPolvo = new Polvo(real_x * 100, real_y * 100 - 3000, 100, 100);
+	                                } else if (tileValue == 8) {
+	                                	polvos.add(new Polvo(real_x * 100, real_y * 100 - 3000, 100, 100));
+	                                }
 		                        }
 		                    }
 		                }
@@ -231,7 +277,74 @@ public class AreaJuego extends JPanel {
 		}
     }
 	
+	public void terminar() {
+		finalizado = true;
+	}
+	
+	public String calcularPuntuacion(long tiempoActual, int objetosRecogidos) {
+		String puntuacion = "";
+		long tiempoFinal = 40;
+		tiempoFinal+=objetosRecogidos*3;
+		if (tiempoActual <= tiempoFinal) {
+            puntuacion = "puntuaciones/SSS.png";
+        } else if (tiempoActual <= tiempoFinal + 10) {
+            puntuacion = "puntuaciones/SS.png";
+        } else if (tiempoActual <= tiempoFinal + 20) {
+            puntuacion = "puntuaciones/S.png";
+        } else if (tiempoActual <= tiempoFinal + 30) {
+            puntuacion = "puntuaciones/A.png";
+        } else if (tiempoActual <= tiempoFinal + 40) {
+            puntuacion = "puntuaciones/B.png";
+        } else {
+            puntuacion = "puntuaciones/C.png";
+        }
+		return puntuacion;
+	}
 
+	public void mostrarAnimacionFinal(Graphics g) {
+	    // Dibuja la animación de finalización del juego
+	    // Puedes usar g.drawString() para mostrar la puntuación
+		g.setColor(new Color(0, 0, 0, 128));
+        g.fillRect(700, 300, 500, 300);
+
+        g.setColor(Color.WHITE);
+        g.setFont(font.deriveFont(Font.PLAIN, 30));
+
+        // Mostrar el tiempo restante
+        long minutos = eventos.getTiempoRestante() / 60;
+        long segundos = eventos.getTiempoRestante() % 60;
+        g.drawString("Tiempo: " + minutos + "m " + segundos + "s", 750, 350);
+
+        // Mostrar el conteo de objetos recogidos
+		for (int i = 0; i < eventos.getObjetosContados(); i++) {
+			g.drawImage(new ImageIcon(getClass().getResource("Tiles/polvo.png")).getImage(), 710 + (i * 50), 370, 40,
+					40, null);
+		}
+
+        // Mostrar la puntuación sancando la imagen de la carpeta de recursos
+		//ruta = "puntuaciones/SSS.png";
+		Image puntuacion = new ImageIcon(getClass().getResource(eventos.getPuntuacion())).getImage();
+		g.drawImage(puntuacion, 850, 430, 200, 100, null);
+        
+        g.setColor(Color.BLUE);
+        g.fillRect(775, 550, 150, 40); // Botón para volver al menú
+        g.fillRect(975, 550, 150, 40); // Botón para repetir el nivel
+
+        // Cambiar el color del botón seleccionado
+        g.setColor(Color.RED);
+        if (botonSeleccionado == 0) {
+            g.drawRect(775, 550, 150, 40);
+        } else {
+            g.drawRect(975, 550, 150, 40);
+        }
+
+        // Escribir el texto en los botones
+        g.setColor(Color.WHITE);
+        g.setFont(font.deriveFont(Font.BOLD, 14));
+        g.drawString("Repetir", 800, 580);
+        g.drawString("Continuar", 990, 580);
+	}
+	
 	public Personaje getPersonaje() {
 		return personaje;
 	}
@@ -286,6 +399,158 @@ public class AreaJuego extends JPanel {
 
 	public void setObstaculos(ArrayList<Obstaculo> obstaculos) {
 		this.obstaculos = obstaculos;
+	}
+
+	public int getxOriginal() {
+		return xOriginal;
+	}
+
+	public void setxOriginal(int xOriginal) {
+		this.xOriginal = xOriginal;
+	}
+
+	public int getyOriginal() {
+		return yOriginal;
+	}
+
+	public void setyOriginal(int yOriginal) {
+		this.yOriginal = yOriginal;
+	}
+
+	public double getRelX() {
+		return relX;
+	}
+
+	public void setRelX(double relX) {
+		this.relX = relX;
+	}
+
+	public double getRelY() {
+		return relY;
+	}
+
+	public void setRelY(double relY) {
+		this.relY = relY;
+	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
+	public int getMinutos() {
+		return minutos;
+	}
+
+	public void setMinutos(int minutos) {
+		this.minutos = minutos;
+	}
+
+	public int getSegundos() {
+		return segundos;
+	}
+
+	public void setSegundos(int segundos) {
+		this.segundos = segundos;
+	}
+
+	public int getDecimasSegundo() {
+		return decimasSegundo;
+	}
+
+	public void setDecimasSegundo(int decimasSegundo) {
+		this.decimasSegundo = decimasSegundo;
+	}
+
+	public int getObjetosRecogidos() {
+		return objetosRecogidos;
+	}
+
+	public void setObjetosRecogidos(int objetosRecogidos) {
+		this.objetosRecogidos = objetosRecogidos;
+	}
+
+	public int getTotalObjetos() {
+		return totalObjetos;
+	}
+
+	public void setTotalObjetos(int totalObjetos) {
+		this.totalObjetos = totalObjetos;
+	}
+
+	public long getTiempoInicio() {
+		return tiempoInicio;
+	}
+
+	public void setTiempoInicio(long tiempoInicio) {
+		this.tiempoInicio = tiempoInicio;
+	}
+
+	public Font getFont() {
+		return font;
+	}
+
+	public void setFont(Font font) {
+		this.font = font;
+	}
+
+	public Polvo getFinalPolvo() {
+		return finalPolvo;
+	}
+
+	public void setFinalPolvo(Polvo finalPolvo) {
+		this.finalPolvo = finalPolvo;
+	}
+
+	public boolean isFinalizado() {
+		return finalizado;
+	}
+
+	public void setFinalizado(boolean finalizado) {
+		this.finalizado = finalizado;
+	}
+
+	public boolean isEsperandoConfirmacion() {
+		return esperandoConfirmacion;
+	}
+
+	public void setEsperandoConfirmacion(boolean esperandoConfirmacion) {
+		this.esperandoConfirmacion = esperandoConfirmacion;
+	}
+
+	public int getBotonSeleccionado() {
+		return botonSeleccionado;
+	}
+
+	public void setBotonSeleccionado(int botonSeleccionado) {
+		this.botonSeleccionado = botonSeleccionado;
+	}
+
+	public PanelMenu getPnlMenu() {
+		return pnlMenu;
+	}
+
+	public void setPnlMenu(PanelMenu pnlMenu) {
+		this.pnlMenu = pnlMenu;
+	}
+
+	public String getRecord() {
+		return record;
+	}
+
+	public void setRecord(String record) {
+		this.record = record;
+	}
+
+	public String getRutarRecord() {
+		return rutarRecord;
+	}
+
+	public void setRutarRecord(String rutarRecord) {
+		this.rutarRecord = rutarRecord;
 	}
 
 }

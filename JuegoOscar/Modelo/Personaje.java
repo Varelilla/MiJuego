@@ -88,7 +88,6 @@ public class Personaje {
 		leftHitBox = new Rectangle(xPos-4,yPos+4,8,ALTO-4);
 		rightHitBox = new Rectangle(xPos+ANCHO -4,yPos+4,8,ALTO-4);
 		botHitBox = new Rectangle(xPos,yPos+ALTO-4,20,4);
-		
 	}
 
 	public void mover(){
@@ -319,6 +318,13 @@ public class Personaje {
 			}
 			
 		}
+		Polvo polvoFinal = level.getFinalPolvo();
+		polvoFinal.setXscroll(xScroll);
+		polvoFinal.setYscroll(yScroll);
+		Rectangle rectFinal = new Rectangle(polvoFinal.getX()+15,polvoFinal.getY()+15-5,polvoFinal.getAncho()-30,polvoFinal.getAlto()-30);
+		if (hitbox.intersects(rectFinal) || leftHitBox.intersects(rectFinal) || rightHitBox.intersects(rectFinal) || botHitBox.intersects(rectFinal)) {
+			level.terminar();
+		}
 		for (Enemigo p : enemigos) {
 			p.setXscroll(xScroll);
 			p.setYscroll(yScroll);
@@ -490,6 +496,11 @@ public class Personaje {
 		enAire = true;
 		xScroll = 0;
 		yScroll = 0;
+		level.setMinutos(0);
+		level.setSegundos(0);
+		level.setDecimasSegundo(0);
+		level.setObjetosRecogidos(0);
+		level.setTiempoInicio(System.currentTimeMillis());
 		for (Plataforma p : plataformas) {
 			p.setXscroll(0);
 			p.setYscroll(0);

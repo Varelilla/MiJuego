@@ -4,6 +4,7 @@ import java.awt.event.KeyListener;
 
 public class EventosPanelMenu {
 	private PanelMenu pnlMenu;
+
 	
 	public EventosPanelMenu(PanelMenu pnlMenu) {
 		this.pnlMenu = pnlMenu;
@@ -55,11 +56,41 @@ public class EventosPanelMenu {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (pnlMenu.isMundo()) {
 						if (pnlMenu.getContador()<5) {
-							pnlMenu.getJuego().getContentPane().removeAll();
-							pnlMenu.getJuego().getContentPane().add(pnlMenu.getJuego().getAreaJuego(), BorderLayout.CENTER);
-							pnlMenu.getJuego().getAreaJuego().requestFocus();
-							pnlMenu.getJuego().revalidate();
-							pnlMenu.getJuego().repaint();
+							if (pnlMenu.getContador()== 0) {
+								pnlMenu.getJuego().getContentPane().removeAll();
+								AreaJuego areaJuego = new AreaJuego(pnlMenu.getContador(), pnlMenu.getJuego());
+								areaJuego.setPnlMenu(pnlMenu);
+								if (pnlMenu.getCompletados()[pnlMenu.getContador()]) {
+									areaJuego.setRecord(pnlMenu.getTiempos()[pnlMenu.getContador()]);
+									areaJuego.setRutarRecord(pnlMenu.getPuntuaciones()[pnlMenu.getContador()]);
+								} else {
+									areaJuego.setRecord("");
+									areaJuego.setRutarRecord("");
+								}
+								pnlMenu.getJuego().setAreaJuego(areaJuego);
+								pnlMenu.getJuego().getContentPane().add(pnlMenu.getJuego().getAreaJuego(), BorderLayout.CENTER);
+								pnlMenu.getJuego().getAreaJuego().requestFocus();
+								pnlMenu.getJuego().revalidate();
+								pnlMenu.getJuego().repaint();
+							} else {
+								if (pnlMenu.getCompletados()[pnlMenu.getContador() -1]) {
+									pnlMenu.getJuego().getContentPane().removeAll();
+									AreaJuego areaJuego = new AreaJuego(pnlMenu.getContador(), pnlMenu.getJuego());
+									areaJuego.setPnlMenu(pnlMenu);
+									if (pnlMenu.getCompletados()[pnlMenu.getContador()]) {
+										areaJuego.setRecord(pnlMenu.getTiempos()[pnlMenu.getContador()]);
+										areaJuego.setRutarRecord(pnlMenu.getPuntuaciones()[pnlMenu.getContador()]);
+									} else {
+										areaJuego.setRecord("");
+										areaJuego.setRutarRecord("");
+									}
+									pnlMenu.getJuego().setAreaJuego(areaJuego);
+									pnlMenu.getJuego().getContentPane().add(pnlMenu.getJuego().getAreaJuego(), BorderLayout.CENTER);
+									pnlMenu.getJuego().getAreaJuego().requestFocus();
+									pnlMenu.getJuego().revalidate();
+									pnlMenu.getJuego().repaint();
+								}
+							}
 						} else {
 							pnlMenu.getJuego().getContentPane().removeAll();
 							pnlMenu.getJuego().getContentPane().add(pnlMenu.getJuego().getMainmenu(), BorderLayout.CENTER);

@@ -26,6 +26,7 @@ public class Plataforma extends JPanel {
 	private ArrayList<Image> imagenes;
 	private boolean muro = false;
 	private double relX, relY;
+	private int pared;
 	
 	
 	public Plataforma(int x, int y, int w, int h){
@@ -39,6 +40,7 @@ public class Plataforma extends JPanel {
 		this.y = y;
 		ancho = w;
 		alto = h;
+		pared = 0;
 		if (ancho<=100) {
 			muro = true;
 		}
@@ -62,6 +64,21 @@ public class Plataforma extends JPanel {
 		alto = h;
 		hitBox = new Rectangle(x,y,ancho,alto);
 		this.muro = muro;
+		cargarImagenes();
+		
+	}
+	
+	public Plataforma(int x, int y, int w, int h, int pared){
+		xscroll=0;
+		yscroll=0;
+		xOrigen = x;
+		yOrigen = y;
+		this.x = x;
+		this.y = y;
+		ancho = w;
+		alto = h;
+		hitBox = new Rectangle(x,y,ancho,alto);
+		this.pared = pared;
 		cargarImagenes();
 		
 	}
@@ -100,6 +117,10 @@ public class Plataforma extends JPanel {
 				}
 				contador++;
 			}
+		} else if(pared == 3) {
+			g.drawImage(imagenes.get(1), x,y, 100, 100, null);
+		} else if(pared == 4) {
+			g.drawImage(imagenes.get(3), x,y, 100, 100, null);
 		} else {
 			for (int i = 0;i<maxAncho;i++) {
 				if (maxAncho == 1) {

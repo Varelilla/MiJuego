@@ -6,6 +6,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -24,6 +25,9 @@ public class PanelMenu extends JPanel{
 	private int xOriginal = 400;
 	private int yOriginal = 300;
 	private String[] nombres;
+	private String[] tiempos = {"2:20", "2:20", "", "", "", "", "", "", ""}; 
+	private String[] puntuaciones = {"puntuaciones/C.png", "puntuaciones/SS.png", "", "", "", "", "", "", ""};
+	private boolean[] completados = {true, true, false, false, false, false, false, false, false};
 	private EventosPanelMenu eventos;
 	private Font font;
 	private double relX, relY;
@@ -125,13 +129,33 @@ public class PanelMenu extends JPanel{
 			g.setColor(Color.WHITE);
 			g.drawRect(x-2 + ((contador% 3) * (int)(400)),y-2 + ((contador / 3)* (int)(250*relY)),(int)(303*relX),(int)(153*relY));
 			for (int i = 0; i < niveles.length; i++) {
-				g.drawImage(niveles[i], x + ((i % 3) * (int)(400*relX)), y + ((i / 3) * (int)(250*relY)),(int)(300*relX),(int)(150*relY), null);	
+				if (i == 0 || i == niveles.length - 1) {
+					g.drawImage(niveles[i], x + ((i % 3) * (int)(400*relX)), y + ((i / 3) * (int)(250*relY)),(int)(300*relX),(int)(150*relY), null);	
+				} else {
+					if (completados[i - 1]) {
+						g.drawImage(niveles[i], x + ((i % 3) * (int)(400*relX)), y + ((i / 3) * (int)(250*relY)),(int)(300*relX),(int)(150*relY), null);	
+					} else {
+						//dibujamos imagen en gris
+						BufferedImage imagenGris = new BufferedImage(400, 250, BufferedImage.TYPE_BYTE_GRAY);
+						Graphics2D prueba = imagenGris.createGraphics();
+						prueba.drawImage(niveles[i], 0, 0, null);
+						prueba.dispose();
+	
+						// Dibujar la imagen en tonos de gris
+						g.drawImage(imagenGris, x + ((i % 3) * (int)(400*relX)), y + ((i / 3) * (int)(250*relY)), (int)(300*relX), (int)(150*relY), null);
+					}
+				}
 				g2d.setColor(new Color(0, 0, 0, 100));
                 g2d.fillRect(x + 10 + ((i % 3) * (int)(400*relX)),y + (int)(100*relY) + ((i / 3) * (int)(250*relY)), (int)(160*relX), (int)(40*relY));
                 g.setColor(Color.WHITE);
                 g.setFont(font.deriveFont(Font.BOLD,(int)(20*relX)));
                 if(i==5) g.drawString("Volver", x + (int)(15*relX) + ((i % 3) * (int)(400*relX)), y + (int)(130*relY) + ((i / 3) * (int)(250*relY)));
                 else g.drawString("Nivel " + i, x + (int)(15*relX) + ((i % 3) * (int)(400*relX)), y + (int)(130*relY) + ((i / 3) * (int)(250*relY)));
+				if (completados[i]) {
+					// Si esta completamos dibujamos la imagen a la izquierda del drawString del nivel
+					Image puntuacion = new ImageIcon(getClass().getResource(puntuaciones[i])).getImage();
+					g.drawImage(puntuacion, x + (int)(230*relX) + ((i % 3) * (int)(400*relX)), y + (int)(80*relY) + ((i / 3) * (int)(250*relY)), (int)(70*relX), (int)(70*relY), null);
+				}
 			}
 
 		} else if (contador > -1) {
@@ -190,5 +214,29 @@ public class PanelMenu extends JPanel{
 
 	public void setMundo(boolean mundo) {
 		this.mundo = mundo;
+	}
+
+	public String[] getTiempos() {
+		return tiempos;
+	}
+
+	public void setTiempos(String[] tiempos) {
+		this.tiempos = tiempos;
+	}
+
+	public String[] getPuntuaciones() {
+		return puntuaciones;
+	}
+
+	public void setPuntuaciones(String[] puntuaciones) {
+		this.puntuaciones = puntuaciones;
+	}
+
+	public boolean[] getCompletados() {
+		return completados;
+	}
+
+	public void setCompletados(boolean[] completados) {
+		this.completados = completados;
 	}
 }
