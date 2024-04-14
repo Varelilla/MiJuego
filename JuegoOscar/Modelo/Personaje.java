@@ -314,14 +314,14 @@ public class Personaje {
 			p.setYscroll(yScroll);
 			Rectangle rect = new Rectangle(p.getX(),p.getY()-5,p.getAncho(),p.getAlto());
 			if(hitbox.intersects(rect) || leftHitBox.intersects(rect) || rightHitBox.intersects(rect) || botHitBox.intersects(rect)){
+				if (!p.isPisado()) level.setObjetosRecogidos(level.getObjetosRecogidos() + 1);
 				p.setPisado(true);
-			}
-			
+			}	
 		}
 		Polvo polvoFinal = level.getFinalPolvo();
 		polvoFinal.setXscroll(xScroll);
 		polvoFinal.setYscroll(yScroll);
-		Rectangle rectFinal = new Rectangle(polvoFinal.getX()+15,polvoFinal.getY()+15-5,polvoFinal.getAncho()-30,polvoFinal.getAlto()-30);
+		Rectangle rectFinal = new Rectangle(polvoFinal.getX()+30,polvoFinal.getY()+30-5,polvoFinal.getAncho()-60,polvoFinal.getAlto()-60);
 		if (hitbox.intersects(rectFinal) || leftHitBox.intersects(rectFinal) || rightHitBox.intersects(rectFinal) || botHitBox.intersects(rectFinal)) {
 			level.terminar();
 		}

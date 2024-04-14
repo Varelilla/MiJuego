@@ -77,7 +77,7 @@ public class EventosPanelMenu {
 									pnlMenu.getJuego().getContentPane().removeAll();
 									AreaJuego areaJuego = new AreaJuego(pnlMenu.getContador(), pnlMenu.getJuego());
 									areaJuego.setPnlMenu(pnlMenu);
-									if (pnlMenu.getCompletados()[pnlMenu.getContador()]) {
+									if (pnlMenu.getPuntuaciones()[pnlMenu.getContador()].length() > 0) {
 										areaJuego.setRecord(pnlMenu.getTiempos()[pnlMenu.getContador()]);
 										areaJuego.setRutarRecord(pnlMenu.getPuntuaciones()[pnlMenu.getContador()]);
 									} else {

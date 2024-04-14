@@ -56,7 +56,6 @@ public class EventosAreaJuego {
 					tiempoRestante = 0;
 					areaJuego.comprobarRecord(puntuacion, tiempoFinal);
 				} else {
-					System.out.println(tiempoFinal);
 					// Animación: contar los objetos recogidos
 					tiempoRestante--;
 

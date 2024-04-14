@@ -24,7 +24,6 @@ public class Plataforma extends JPanel {
 	private BufferedImage transformedImage;
 	private BufferedImage bimage;
 	private ArrayList<Image> imagenes;
-	private boolean muro = false;
 	private double relX, relY;
 	private int pared;
 	
@@ -41,9 +40,6 @@ public class Plataforma extends JPanel {
 		ancho = w;
 		alto = h;
 		pared = 0;
-		if (ancho<=100) {
-			muro = true;
-		}
 		hitBox = new Rectangle(x,y,ancho,alto);
 		cargarImagenes();
 	}
@@ -53,21 +49,7 @@ public class Plataforma extends JPanel {
         
     }
 
-	public Plataforma(int x, int y, int w, int h, boolean muro){
-		xscroll=0;
-		yscroll=0;
-		xOrigen = x;
-		yOrigen = y;
-		this.x = x;
-		this.y = y;
-		ancho = w;
-		alto = h;
-		hitBox = new Rectangle(x,y,ancho,alto);
-		this.muro = muro;
-		cargarImagenes();
-		
-	}
-	
+
 	public Plataforma(int x, int y, int w, int h, int pared){
 		xscroll=0;
 		yscroll=0;
@@ -87,17 +69,17 @@ public class Plataforma extends JPanel {
 		imagenes = new ArrayList<Image>();
 		image = new ImageIcon(getClass().getResource("bosque/1.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("bosque/4.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/2.png")).getImage();
 		imagenes.add(image);
 		image = new ImageIcon(getClass().getResource("bosque/3.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("bosque/6.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/4.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("bosque/2.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/5.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("bosque/16.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/plataforma.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("bosque/14.png")).getImage();
+		image = new ImageIcon(getClass().getResource("bosque/8.png")).getImage();
 		imagenes.add(image);
 	}
 
@@ -106,31 +88,22 @@ public class Plataforma extends JPanel {
 		int contador = 0;
 		int maxAncho = ancho/100;
 		int maxAlto = alto/100;
-		if (muro) {
-			for (int i = 0;i<maxAlto;i++) {
-				if (i == 0) {
-					g.drawImage(imagenes.get(1), x, y + (100*i), 100, 100, null);
-				} else if (i == (maxAncho -1)) {
-					g.drawImage(imagenes.get(5), x , y + (100*i), 100, 100, null);
-				} else {
-					g.drawImage(imagenes.get(3), x , y + (100*i), 100, 100, null);
-				}
-				contador++;
-			}
-		} else if(pared == 3) {
-			g.drawImage(imagenes.get(1), x,y, 100, 100, null);
-		} else if(pared == 4) {
+		if(pared == 3) {
 			g.drawImage(imagenes.get(3), x,y, 100, 100, null);
+		} else if(pared == 4) {
+			g.drawImage(imagenes.get(4), x,y, 100, 100, null);
+		} else if(pared == 12) {
+			g.drawImage(imagenes.get(6), x,y, 100, 100, null);
 		} else {
 			for (int i = 0;i<maxAncho;i++) {
 				if (maxAncho == 1) {
-					g.drawImage(imagenes.get(6), x + (100*i),y, 100, 100, null);
+					g.drawImage(imagenes.get(5), x + (100*i),y, 100, 100, null);
 				} else if (i == 0) {
 					g.drawImage(imagenes.get(0), x + (100*i), y, 100, 100, null);
 				} else if (i == (maxAncho -1)) {
 					g.drawImage(imagenes.get(2), x + (100*i), y, 100, 100, null);
 				} else {
-					g.drawImage(imagenes.get(4), x + (100*i), y , 100, 100, null);
+					g.drawImage(imagenes.get(1), x + (100*i), y , 100, 100, null);
 				}
 				contador++;
 			}
@@ -228,11 +201,4 @@ public class Plataforma extends JPanel {
 	public void setyOrigen(int yOrigen) {
 		this.yOrigen = yOrigen;
 	}
-	public boolean isMuro() {
-		return muro;
-	}
-	public void setMuro(boolean muro) {
-		this.muro = muro;
-	}
-
 }

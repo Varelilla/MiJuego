@@ -1,0 +1,16 @@
+Mundo 0:
+00:18:00 ,01:01:74 , , , ,
+puntuaciones/SSS.png ,puntuaciones/A.png , , , ,
+true ,true ,false ,false ,false ,
+Mundo 1:
+00:31:09 , , , , ,
+puntuaciones/SSS.png , , , , ,
+false ,false ,false ,false ,false ,
+Mundo 2:
+ , , , , ,
+ , , , , ,
+false ,false ,false ,false ,false ,
+Mundo 3:
+ , , , , ,
+ , , , , ,
+false ,false ,false ,false ,false ,

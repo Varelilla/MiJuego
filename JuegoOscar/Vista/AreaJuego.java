@@ -47,7 +47,12 @@ public class AreaJuego extends JPanel {
     private String record;
     private String rutarRecord;
     private int nivelPanelAnterior;
-    
+    private String[] niveles = {"/niveles/nivel1.tmx", "/niveles/nivel2.tmx", "/niveles/nivel3.tmx", "/niveles/nivel4.tmx", "/niveles/nivel5.tmx"
+    		, "/niveles/nivel6.tmx", "/niveles/nivel7.tmx", "/niveles/nivel8.tmx", "/niveles/nivel9.tmx", "/niveles/nivel10.tmx"
+    		, "/niveles/nivel11.tmx", "/niveles/nivel12.tmx", "/niveles/nivel13.tmx", "/niveles/nivel14.tmx", "/niveles/nivel15.tmx"
+    		, "/niveles/nivel16.tmx", "/niveles/nivel17.tmx", "/niveles/nivel18.tmx", "/niveles/nivel19.tmx", "/niveles/nivel20.tmx"};
+    private long tiempos[] = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40};
+    long tiempoFinal = 40;
     
 
 	/**
@@ -61,7 +66,8 @@ public class AreaJuego extends JPanel {
 		setFocusable(true);
 		setRequestFocusEnabled(true);
 		//crearPlataformas();
-		cargarNivel("/niveles/nivel2.tmx");
+		cargarNivel(niveles[contador]);
+		tiempoFinal = tiempos[contador];
 		personaje = new Personaje(this, 300, 600);
 		try {
             ClassLoader classLoader = PanelMenu.class.getClassLoader();
@@ -70,7 +76,6 @@ public class AreaJuego extends JPanel {
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
-		objetosRecogidos = 5;
 		eventos = new EventosAreaJuego(this);
 	}
 	
@@ -108,10 +113,6 @@ public class AreaJuego extends JPanel {
 		for (int i = 0; i < 3; i ++) {
 			g2d.drawImage(image, 0 + (i * 1500), 0 , 1500 , 980 ,null);
 		}
-
-		// Dibujar fuente
-		image = new ImageIcon(getClass().getResource("Tiles/fuente.png")).getImage();
-		g2d.drawImage(image, (500 - personaje.getxScroll()), 656 , 144 , 144 ,null);
 
 		// Dibujar polvos
 		for (Polvo p : polvos) {
@@ -185,20 +186,49 @@ public class AreaJuego extends JPanel {
 
 		String tiempoFormateado = String.format("%02d:%02d:%02d", minutos, segundos, decimas);
 		if (record.equals("")) {
-			
 			record = tiempoFormateado;
 			rutarRecord = puntuacion;
 			pnlMenu.getTiempos()[nivelPanelAnterior] = tiempoFormateado;
 			pnlMenu.getPuntuaciones()[nivelPanelAnterior] = puntuacion;
+			pnlMenu.getJuego().guardarDatos("datos.txt");
 		} else {
-			if (puntuacion.compareTo(record) > 0) {
+			if (sacarValorPuntuacion(puntuacion) > sacarValorPuntuacion(rutarRecord)) {
 				record = tiempoFormateado;
 				rutarRecord = puntuacion;
 				pnlMenu.getTiempos()[nivelPanelAnterior] = tiempoFormateado;
 				pnlMenu.getPuntuaciones()[nivelPanelAnterior] = puntuacion;
+				pnlMenu.getJuego().guardarDatos("datos.txt");
+			} else if (sacarValorPuntuacion(puntuacion) == sacarValorPuntuacion(rutarRecord) && tiempoFinal < eventos.getTiempoFinal()) {
+				record = tiempoFormateado;
+				rutarRecord = puntuacion;
+				pnlMenu.getTiempos()[nivelPanelAnterior] = tiempoFormateado;
+				pnlMenu.getPuntuaciones()[nivelPanelAnterior] = puntuacion;
+				pnlMenu.getJuego().guardarDatos("datos.txt");
 			}
 		}
-		
+		if (sacarValorPuntuacion(puntuacion) > 2) {
+			pnlMenu.getCompletados()[nivelPanelAnterior] = true;
+		}
+	}
+	
+	public int sacarValorPuntuacion(String puntuacion) {
+		// Funcion para darle valor numerico a las puntuaciones para compararlas
+		switch (puntuacion) {
+		case "puntuaciones/SSS.png":
+			return 6;
+		case "puntuaciones/SS.png":
+			return 5;
+		case "puntuaciones/S.png":
+			return 4;
+		case "puntuaciones/A.png":
+			return 3;
+		case "puntuaciones/B.png":
+			return 2;
+		case "puntuaciones/C.png":
+			return 1;
+		default:
+			return 0;
+		}
 	}
 
 	public void actualizarCronometro() {
@@ -261,11 +291,19 @@ public class AreaJuego extends JPanel {
 		                                } 
 		                            } else if (tileValue == 3 || tileValue == 4) {
                                         plataformas.add(new Plataforma(real_x * 100, real_y * 100 - 3000, 100, 100, tileValue));
-	                                } else if (tileValue == 9) {
-	                                	finalPolvo = new Polvo(real_x * 100, real_y * 100 - 3000, 100, 100);
 	                                } else if (tileValue == 8) {
-	                                	polvos.add(new Polvo(real_x * 100, real_y * 100 - 3000, 100, 100));
-	                                }
+	                                	finalPolvo = new Polvo((real_x * 100) + 25, (real_y * 100 - 3000) + 25, 75, 75, true);
+	                                } else if (tileValue == 9) {
+	                                	polvos.add(new Polvo((real_x * 100) + 25, (real_y * 100 - 3000) + 25, 50, 50));
+									} else if (tileValue == 5 ||  tileValue == 6 || tileValue == 7) {
+										obstaculos.add(new Obstaculo(real_x * 100, real_y * 100 - 3000, 100, 100, tileValue-4));
+									} else if (tileValue == 12) {
+										plataformas.add(new Plataforma(real_x * 100, real_y * 100 - 3000, 100, 100, tileValue));
+									} else if (tileValue == 11) {
+										enemigos.add(new Enemigo(real_x * 100, real_y * 100 - 3000, 100, 100, 0, 5, 0));
+									} else if (tileValue == 10) {
+										
+									}
 		                        }
 		                    }
 		                }
@@ -283,7 +321,7 @@ public class AreaJuego extends JPanel {
 	
 	public String calcularPuntuacion(long tiempoActual, int objetosRecogidos) {
 		String puntuacion = "";
-		long tiempoFinal = 40;
+		
 		tiempoFinal+=objetosRecogidos*3;
 		if (tiempoActual <= tiempoFinal) {
             puntuacion = "puntuaciones/SSS.png";
@@ -317,7 +355,7 @@ public class AreaJuego extends JPanel {
 
         // Mostrar el conteo de objetos recogidos
 		for (int i = 0; i < eventos.getObjetosContados(); i++) {
-			g.drawImage(new ImageIcon(getClass().getResource("Tiles/polvo.png")).getImage(), 710 + (i * 50), 370, 40,
+			g.drawImage(new ImageIcon(getClass().getResource("objetos/escoba.png")).getImage(), 710 + (i * 50), 370, 40,
 					40, null);
 		}
 

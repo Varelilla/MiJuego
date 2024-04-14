@@ -7,6 +7,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,9 +29,9 @@ public class PanelMenu extends JPanel{
 	private int xOriginal = 400;
 	private int yOriginal = 300;
 	private String[] nombres;
-	private String[] tiempos = {"2:20", "2:20", "", "", "", "", "", "", ""}; 
-	private String[] puntuaciones = {"puntuaciones/C.png", "puntuaciones/SS.png", "", "", "", "", "", "", ""};
-	private boolean[] completados = {true, true, false, false, false, false, false, false, false};
+	private String[] tiempos = {"", "", "", "", ""}; 
+	private String[] puntuaciones = {"", "", "", "", ""};
+	private boolean[] completados = {false, false, false, false, false};
 	private EventosPanelMenu eventos;
 	private Font font;
 	private double relX, relY;
@@ -151,11 +155,13 @@ public class PanelMenu extends JPanel{
                 g.setFont(font.deriveFont(Font.BOLD,(int)(20*relX)));
                 if(i==5) g.drawString("Volver", x + (int)(15*relX) + ((i % 3) * (int)(400*relX)), y + (int)(130*relY) + ((i / 3) * (int)(250*relY)));
                 else g.drawString("Nivel " + i, x + (int)(15*relX) + ((i % 3) * (int)(400*relX)), y + (int)(130*relY) + ((i / 3) * (int)(250*relY)));
-				if (completados[i]) {
-					// Si esta completamos dibujamos la imagen a la izquierda del drawString del nivel
-					Image puntuacion = new ImageIcon(getClass().getResource(puntuaciones[i])).getImage();
-					g.drawImage(puntuacion, x + (int)(230*relX) + ((i % 3) * (int)(400*relX)), y + (int)(80*relY) + ((i / 3) * (int)(250*relY)), (int)(70*relX), (int)(70*relY), null);
-				}
+                if (i<5) {
+                	if (puntuaciones[i].length() > 0) {
+                		// Si tiene puntuacion dibujamos la imagen a la izquierda del drawString del nivel
+                		Image puntuacion = new ImageIcon(getClass().getResource(puntuaciones[i])).getImage();
+                		g.drawImage(puntuacion, x + (int)(230*relX) + ((i % 3) * (int)(400*relX)), y + (int)(80*relY) + ((i / 3) * (int)(250*relY)), (int)(70*relX), (int)(70*relY), null);
+                	}
+                }
 			}
 
 		} else if (contador > -1) {
@@ -170,7 +176,7 @@ public class PanelMenu extends JPanel{
 				g.setFont(font.deriveFont(Font.BOLD, (int)(25 * relX)));
 				FontMetrics metrics = g.getFontMetrics();
 				int x = (getWidth() - metrics.stringWidth(nombres[i])) / 2; // Centra horizontalmente
-				g.drawString(nombres[i], x, y + (int)(55*relY) + (int)((i * 85) *relY));
+				g.drawString(nombres[i], x+15, y + (int)(55*relY) + (int)((i * 85) *relY));
 			}
 		} else {
 			Graphics2D g2d = (Graphics2D) g;

@@ -12,7 +12,13 @@ public class Polvo extends Plataforma{
 	public Polvo(int x, int y, int w, int h) {
 		super(x, y, w, h);
 		pisado = false;
-		image = new ImageIcon(getClass().getResource("Tiles/polvo.png")).getImage();
+		image = new ImageIcon(getClass().getResource("objetos/escoba.png")).getImage();
+	}
+	
+	public Polvo(int x, int y, int w, int h, boolean aspirador) {
+		super(x, y, w, h);
+		pisado = false;
+		if (aspirador) image = new ImageIcon(getClass().getResource("objetos/aspiradora.png")).getImage();
 	}
 	
 	public void dibujar(Graphics g) {

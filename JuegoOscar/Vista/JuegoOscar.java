@@ -6,6 +6,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -79,6 +84,7 @@ public class JuegoOscar extends JFrame {
 		pnlBosque = new PanelMenu(BOSQUE,this);
 		pnlControles = new PanelMenu(CONTROLS,this);
 		pnlLaboratorio= new PanelMenu(LABORATORIO,this);
+		cargarDatos("datos.txt");
 		
 		mainmenu = new PanelMenu(MAINMENU,this);
 			    
@@ -90,6 +96,105 @@ public class JuegoOscar extends JFrame {
 		mainmenu.requestFocus();
 		eventos = new EventosJuegoOscar(this);
 	}
+	
+	public void guardarDatos(String nombreArchivo) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo))) {
+            for (int i = 0; i < 4; i++) {
+                writer.write("Mundo " + i + ":\n");
+                PanelMenu aux = null;
+				switch (i) {
+				case 0:
+					aux = pnlBosque;
+					break;
+				case 1:
+					aux = pnlLaboratorio;
+					break;
+				case 2:
+					aux = pnlMansion;
+					break;
+				case 3:
+					aux = pnlCiudad;
+					break;
+				}
+                // Escribir tiempos
+                for (String tiempo : aux.getTiempos()) {
+                    writer.write(tiempo + " ,");
+                }
+                writer.newLine();
+
+                // Escribir puntuaciones
+                for (String puntuacion : aux.getPuntuaciones()) {
+                    writer.write(puntuacion + " ,");
+                }
+                writer.newLine();
+
+                // Escribir completados
+                for (boolean completado : aux.getCompletados()) {
+                    writer.write(completado + " ,");
+                }
+                aux = null;
+                writer.newLine();
+            }
+            System.out.println("Datos de todos los mundos guardados correctamente en " + nombreArchivo);
+        } catch (IOException e) {
+            System.err.println("Error al guardar los datos: " + e.getMessage());
+        }
+    }
+
+    // Función para cargar los datos de todos los mundos desde un archivo
+    public void cargarDatos(String nombreArchivo) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(nombreArchivo))) {
+            String line;
+            int mundo = 0;
+            while ((line = reader.readLine()) != null && mundo < 4) {
+                if (line.startsWith("Mundo")) {
+                    // Saltar la línea de identificación del mundo
+                	PanelMenu aux = null;
+                	switch (mundo) {
+                	case 0:
+                		aux = pnlBosque;
+                		break;
+                	case 1:
+                		aux = pnlLaboratorio;
+                		break;
+                	case 2:
+                		aux = pnlMansion;
+                		break;
+                	case 3:
+                		aux = pnlCiudad;
+                		break;
+                	}
+                    line = reader.readLine();
+                    String[] datos = line.split(",");
+					for (int i = 0; i < datos.length; i++) {
+						datos[i] = datos[i].trim();
+					}
+                    aux.setTiempos(datos);
+
+                    line = reader.readLine();
+                    datos = line.split(",");
+					for (int i = 0; i < datos.length; i++) {
+						datos[i] = datos[i].trim();
+					}
+                    aux.setPuntuaciones(datos);
+
+                    line = reader.readLine();
+                    datos = line.split(",");
+                    boolean[] completados = new boolean[datos.length];
+                    for (int j = 0; j < datos.length; j++) {
+                        completados[j] = Boolean.parseBoolean(datos[j].trim());
+                    }
+                    aux.setCompletados(completados);
+                    mundo++;
+                }
+            }
+            System.out.println("Datos de todos los mundos cargados correctamente desde " + nombreArchivo);
+        } catch (IOException e) {
+            System.err.println("Error al cargar los datos: " + e.getMessage());
+        }
+    }
+
+
 	
 	public void cambiarTamaño(int x, int y) {
 		mainmenu.cambiarTamaño(x,y);

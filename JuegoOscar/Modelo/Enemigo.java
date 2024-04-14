@@ -17,18 +17,18 @@ public class Enemigo extends Plataforma {
 	private int frames=0;
 	private Rectangle hitBox;
 	
-	public Enemigo(int x, int y, int w, int h, int velX, int velY, int numMov, int tipo) {
-		super(x, y, w, h);
+	public Enemigo(int x, int y, int w, int h, int velX, int velY, int tipo) {
+		super(x+15, y+10, w-30, h-20);
 		this.velX = -velX;
 		this.velY = velY;
 		mov = 0;
-		this.numMov = numMov;
+		this.numMov = 25;
 		this.tipo = tipo;
 		cargarImagenes();
 		estadoActual = 0;
-		hitBox = new Rectangle(getX() + (int)(getAncho()*0.7),getY() + (int)(getAlto() * 0.7),getAncho(),getAlto());
-
+		hitBox = new Rectangle(x,y,w,h);
 	}
+	
 	public void dibujar(Graphics g){
 		//g.fillOval(getX(), getY(), getAncho(), getAlto());
 		frames++;
@@ -86,7 +86,7 @@ public class Enemigo extends Plataforma {
 		return hitBox;
 	}
 	public void hitBoxEnemigo() {
-		this.hitBox = new Rectangle(getX() + (int)(getAncho()*1.4),getY() + (int)(getAlto() * 1.35),getAncho(),getAlto());
+		this.hitBox = new Rectangle(getX(),getY(),getAncho(),getAlto());
 	}
 
 }
