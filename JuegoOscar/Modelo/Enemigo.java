@@ -16,17 +16,21 @@ public class Enemigo extends Plataforma {
 	private int estadoActual;
 	private int frames=0;
 	private Rectangle hitBox;
+	private int tipoEnemigo;
+	private int xInicial, yInicial;
 	
-	public Enemigo(int x, int y, int w, int h, int velX, int velY, int tipo) {
-		super(x+15, y+10, w-30, h-20);
+	public Enemigo(int x, int y, int w, int h, int velX, int velY, int tipo, int estado) {
+		super(x+15, y+10, w-30, h-20, estado);
 		this.velX = -velX;
 		this.velY = velY;
+		this.xInicial = x;
+		this.yInicial = y;
 		mov = 0;
 		this.numMov = 25;
 		this.tipo = tipo;
 		cargarImagenes();
 		estadoActual = 0;
-		hitBox = new Rectangle(x,y,w,h);
+		hitBox = new Rectangle(x+15,y+15,w-30,h-30);
 	}
 	
 	public void dibujar(Graphics g){
@@ -38,25 +42,54 @@ public class Enemigo extends Plataforma {
 		}
 
 		g.drawImage(sprites.get(0).get(estadoActual%7),getX(),getY(),null);
+		if (tipoEnemigo == JuegoOscar.LABORATORIO) {
+			if (velX < 0) {
+				g.drawImage(new ImageIcon(getClass().getResource("objetos/barrilIzquierda.png")).getImage(),xInicial - getXscroll(),yInicial - getYscroll(),100,100,null);
+			} else if  (velX > 0) {
+				g.drawImage(new ImageIcon(getClass().getResource("objetos/barrilDerecha.png")).getImage(),
+					xInicial - getXscroll(), yInicial - getYscroll(), 100, 100, null);
+			} else if (velY > 0) {
+				g.drawImage(new ImageIcon(getClass().getResource("objetos/barrilAbajo.png")).getImage(),
+					xInicial - getXscroll(), yInicial - getYscroll(), 100, 100, null);
+			}
+			else{
+				g.drawImage(new ImageIcon(getClass().getResource("objetos/barrilArriba.png")).getImage(),xInicial - getXscroll(),yInicial - getYscroll(),100,100,null);
+			}
+		}
 	}
 	
 	public void mover() {
-		mov++;
-		if (mov >= numMov) {
-			velX = 0-velX;
-			velY = 0-velY;
-			mov = -numMov;
-		} else if (mov <= -numMov) {
-			velX = 0-velX;
-			velY = 0-velY;
-			mov = -numMov;
+		if (tipoEnemigo == JuegoOscar.BOSQUE) {
+			mov++;
+			if (mov >= numMov) {
+				velX = 0-velX;
+				velY = 0-velY;
+				mov = -numMov;
+			} else if (mov <= -numMov) {
+				velX = 0-velX;
+				velY = 0-velY;
+				mov = -numMov;
+			}
+	
+			setX(getX()+velX);
+			setxOrigen(getxOrigen()+velX);
+	
+			setY(getY()+velY);
+			setyOrigen(getyOrigen()+velY);
+		} else if (tipoEnemigo == JuegoOscar.LABORATORIO) {
+			mov++;
+			setX(getX()+velX);
+			setxOrigen(getxOrigen()+velX);
+			setY(getY()+velY);
+			setyOrigen(getyOrigen()+velY);
+			if (mov > numMov) {
+				mov = 0;
+				setX(xInicial);
+				setxOrigen(xInicial);
+				setY(yInicial);
+				setyOrigen(yInicial);
+			}
 		}
-
-		setX(getX()+velX);
-		setxOrigen(getxOrigen()+velX);
-
-		setY(getY()+velY);
-		setyOrigen(getyOrigen()+velY);
 	}
 	
 	public void cargarImagenes() {
@@ -86,7 +119,31 @@ public class Enemigo extends Plataforma {
 		return hitBox;
 	}
 	public void hitBoxEnemigo() {
-		this.hitBox = new Rectangle(getX(),getY(),getAncho(),getAlto());
+		this.hitBox = new Rectangle(getX()+15,getY()+15,getAncho()-30,getAlto()-30);
+	}
+
+	public int getTipoEnemigo() {
+		return tipoEnemigo;
+	}
+
+	public void setTipoEnemigo(int tipoEnemigo) {
+		this.tipoEnemigo = tipoEnemigo;
+		switch (tipoEnemigo) {
+		case JuegoOscar.BOSQUE:
+			numMov = 25;
+			break;
+		case JuegoOscar.LABORATORIO:
+			numMov = 100;
+			velX = velX*2;
+			velY = velY*2;
+			break;
+		case JuegoOscar.MANSION:
+			numMov = 25;
+			break;
+		case JuegoOscar.CIUDAD:
+			numMov = 25;
+			break;
+		}
 	}
 
 }

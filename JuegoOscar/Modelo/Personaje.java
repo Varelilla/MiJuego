@@ -62,6 +62,8 @@ public class Personaje {
     private boolean enPared = true;
     private int xScroll;
     private int yScroll;
+    private int xScrollOriginal;
+    private int yScrollOriginal;
    
 	public Personaje(AreaJuego level,int x, int y) {
 		enPared = false;
@@ -70,6 +72,8 @@ public class Personaje {
 		tocandoSuelo = false;
 		tocandoCuesta = false;
 		xScroll = 0;
+		xScrollOriginal = 0;
+		yScrollOriginal = 0;
 		yScroll = 0;
 		vivo=true;
 		enAire=true;
@@ -290,6 +294,7 @@ public class Personaje {
 						tocandoSuelo = true;
 						yPos = temp.getBottom();
 						yVel = 0;
+						
 					}
 
 			}	
@@ -307,6 +312,7 @@ public class Personaje {
 				{
 					tocandoDerecha = true;
 				}
+
 			}
 		}
 		for (Polvo p : polvos) {
@@ -323,7 +329,14 @@ public class Personaje {
 		polvoFinal.setYscroll(yScroll);
 		Rectangle rectFinal = new Rectangle(polvoFinal.getX()+30,polvoFinal.getY()+30-5,polvoFinal.getAncho()-60,polvoFinal.getAlto()-60);
 		if (hitbox.intersects(rectFinal) || leftHitBox.intersects(rectFinal) || rightHitBox.intersects(rectFinal) || botHitBox.intersects(rectFinal)) {
-			level.terminar();
+			if (level.isNivelFinal()) {
+				if (level.getObjetosRecogidos() == 10) {
+					level.terminar();
+				}
+			} else {
+				level.terminar();
+			}
+			
 		}
 		for (Enemigo p : enemigos) {
 			p.setXscroll(xScroll);
@@ -494,21 +507,21 @@ public class Personaje {
 		yVel=0;
 		estadoActual=0;
 		enAire = true;
-		xScroll = 0;
-		yScroll = 0;
+		xScroll = xScrollOriginal;
+		yScroll = yScrollOriginal;
 		level.setMinutos(0);
 		level.setSegundos(0);
 		level.setDecimasSegundo(0);
 		level.setObjetosRecogidos(0);
 		level.setTiempoInicio(System.currentTimeMillis());
 		for (Plataforma p : plataformas) {
-			p.setXscroll(0);
-			p.setYscroll(0);
+			p.setXscroll(xScrollOriginal);
+			p.setYscroll(yScrollOriginal);
 		}
 		for (Polvo p: polvos) {
 			p.setPisado(false);
-			p.setXscroll(0);
-			p.setYscroll(0);
+			p.setXscroll(xScrollOriginal);
+			p.setYscroll(yScrollOriginal);
 		}
 	}
 
@@ -558,5 +571,21 @@ public class Personaje {
 
 	public void setyScroll(int yScroll) {
 		this.yScroll = yScroll;
+	}
+
+	public int getXScrollOriginal() {
+		return xScrollOriginal;
+	}
+
+	public void setXScrollOriginal(int xScrollOriginal) {
+		this.xScrollOriginal = xScrollOriginal;
+	}
+
+	public int getYScrollOriginal() {
+		return yScrollOriginal;
+	}
+
+	public void setYScrollOriginal(int yScrollOriginal) {
+		this.yScrollOriginal = yScrollOriginal;
 	}
 }

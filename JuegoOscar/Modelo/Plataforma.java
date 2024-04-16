@@ -26,21 +26,50 @@ public class Plataforma extends JPanel {
 	private ArrayList<Image> imagenes;
 	private double relX, relY;
 	private int pared;
+	private boolean movil;
+	private int movimiento;
+	private int velX;
+	private int velY;
+	private int numMov;
+	private int mov;
+	private int estado;
 	
 	
-	public Plataforma(int x, int y, int w, int h){
+	public Plataforma(int x, int y, int w, int h, int estado){
 		xscroll= 0;
 		yscroll= 0;
 		xOrigen = x;
 		yOrigen = y;
+		this.estado = estado;
 		relX = 1;
 		relY = 1;
 		this.x = x;
 		this.y = y;
 		ancho = w;
+		movimiento = 10;
 		alto = h;
 		pared = 0;
 		hitBox = new Rectangle(x,y,ancho,alto);
+		movil = false;
+		cargarImagenes();
+	}
+	
+	public Plataforma(int x, int y, int w, int h,int pared, int estado){
+		xscroll= 0;
+		yscroll= 0;
+		xOrigen = x;
+		yOrigen = y;
+		this.estado = estado;
+		relX = 1;
+		relY = 1;
+		this.x = x;
+		this.y = y;
+		ancho = w;
+		movimiento = 10;
+		alto = h;
+		this.pared = pared;
+		hitBox = new Rectangle(x,y,ancho,alto);
+		movil = false;
 		cargarImagenes();
 	}
 	
@@ -48,38 +77,41 @@ public class Plataforma extends JPanel {
         hitBox = new Rectangle((int)(x *relX),(int)(y *relY),(int)(ancho*relX),(int)(alto*relY));
         
     }
+	
 
 
-	public Plataforma(int x, int y, int w, int h, int pared){
-		xscroll=0;
-		yscroll=0;
-		xOrigen = x;
-		yOrigen = y;
-		this.x = x;
-		this.y = y;
-		ancho = w;
-		alto = h;
-		hitBox = new Rectangle(x,y,ancho,alto);
-		this.pared = pared;
-		cargarImagenes();
-		
-	}
 	
 	public void cargarImagenes() {
+		String ruta = "";
+		switch (estado) {
+		case JuegoOscar.BOSQUE:
+			ruta = "bosque";
+			break;
+		case JuegoOscar.LABORATORIO:
+			ruta = "lab";
+			break;
+		case JuegoOscar.CIUDAD:
+			ruta = "ciudad";
+			break;
+		case JuegoOscar.MANSION:
+			ruta = "mansion";
+			break;
+		}
+
 		imagenes = new ArrayList<Image>();
-		image = new ImageIcon(getClass().getResource("bosque/1.png")).getImage();
+		image = new ImageIcon(getClass().getResource("" + ruta+ "/1.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("bosque/2.png")).getImage();
+		image = new ImageIcon(getClass().getResource(ruta+ "/2.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("bosque/3.png")).getImage();
+		image = new ImageIcon(getClass().getResource(ruta+ "/3.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("bosque/4.png")).getImage();
+		image = new ImageIcon(getClass().getResource(ruta+ "/4.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("bosque/5.png")).getImage();
+		image = new ImageIcon(getClass().getResource(ruta+ "/5.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("bosque/plataforma.png")).getImage();
+		image = new ImageIcon(getClass().getResource(ruta + "/plataforma.png")).getImage();
 		imagenes.add(image);
-		image = new ImageIcon(getClass().getResource("bosque/8.png")).getImage();
+		image = new ImageIcon(getClass().getResource(ruta+ "/8.png")).getImage();
 		imagenes.add(image);
 	}
 
@@ -200,5 +232,45 @@ public class Plataforma extends JPanel {
 
 	public void setyOrigen(int yOrigen) {
 		this.yOrigen = yOrigen;
+	}
+
+	public boolean isMovil() {
+		return movil;
+	}
+
+	public void setMovil(boolean movil) {
+		this.movil = movil;
+	}
+
+	public int getVelX() {
+		return velX;
+	}
+
+	public void setVelX(int velX) {
+		this.velX = velX;
+	}
+
+	public int getVelY() {
+		return velY;
+	}
+
+	public void setVelY(int velY) {
+		this.velY = velY;
+	}
+
+	public int getNumMov() {
+		return numMov;
+	}
+
+	public void setNumMov(int numMov) {
+		this.numMov = numMov;
+	}
+
+	public int getMov() {
+		return mov;
+	}
+
+	public void setMov(int mov) {
+		this.mov = mov;
 	}
 }

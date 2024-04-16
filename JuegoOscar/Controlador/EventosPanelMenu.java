@@ -56,10 +56,26 @@ public class EventosPanelMenu {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (pnlMenu.isMundo()) {
 						if (pnlMenu.getContador()<5) {
+							int aux = 0;
+							switch (pnlMenu.getEstado()) {
+							case JuegoOscar.BOSQUE:
+								aux = 0;
+								break;
+							case JuegoOscar.LABORATORIO:
+								aux = 5;
+								break;
+							case JuegoOscar.MANSION:
+								aux = 10;
+								break;
+							case JuegoOscar.CIUDAD:
+								aux = 15;
+								break;
+							}
+							
+
 							if (pnlMenu.getContador()== 0) {
 								pnlMenu.getJuego().getContentPane().removeAll();
-								AreaJuego areaJuego = new AreaJuego(pnlMenu.getContador(), pnlMenu.getJuego());
-								areaJuego.setPnlMenu(pnlMenu);
+								AreaJuego areaJuego = new AreaJuego(pnlMenu.getContador()+aux, pnlMenu.getJuego(),pnlMenu);
 								if (pnlMenu.getCompletados()[pnlMenu.getContador()]) {
 									areaJuego.setRecord(pnlMenu.getTiempos()[pnlMenu.getContador()]);
 									areaJuego.setRutarRecord(pnlMenu.getPuntuaciones()[pnlMenu.getContador()]);
@@ -75,14 +91,19 @@ public class EventosPanelMenu {
 							} else {
 								if (pnlMenu.getCompletados()[pnlMenu.getContador() -1]) {
 									pnlMenu.getJuego().getContentPane().removeAll();
-									AreaJuego areaJuego = new AreaJuego(pnlMenu.getContador(), pnlMenu.getJuego());
-									areaJuego.setPnlMenu(pnlMenu);
+									AreaJuego areaJuego = new AreaJuego(pnlMenu.getContador()+aux, pnlMenu.getJuego(),pnlMenu);
 									if (pnlMenu.getPuntuaciones()[pnlMenu.getContador()].length() > 0) {
 										areaJuego.setRecord(pnlMenu.getTiempos()[pnlMenu.getContador()]);
 										areaJuego.setRutarRecord(pnlMenu.getPuntuaciones()[pnlMenu.getContador()]);
 									} else {
 										areaJuego.setRecord("");
 										areaJuego.setRutarRecord("");
+									}
+									if (pnlMenu.getContador() == 4) {
+										areaJuego.setNivelFinal(true);
+										System.out.println("Nivel final");
+									} else {
+										
 									}
 									pnlMenu.getJuego().setAreaJuego(areaJuego);
 									pnlMenu.getJuego().getContentPane().add(pnlMenu.getJuego().getAreaJuego(), BorderLayout.CENTER);

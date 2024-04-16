@@ -51,24 +51,47 @@ public class AreaJuego extends JPanel {
     		, "/niveles/nivel6.tmx", "/niveles/nivel7.tmx", "/niveles/nivel8.tmx", "/niveles/nivel9.tmx", "/niveles/nivel10.tmx"
     		, "/niveles/nivel11.tmx", "/niveles/nivel12.tmx", "/niveles/nivel13.tmx", "/niveles/nivel14.tmx", "/niveles/nivel15.tmx"
     		, "/niveles/nivel16.tmx", "/niveles/nivel17.tmx", "/niveles/nivel18.tmx", "/niveles/nivel19.tmx", "/niveles/nivel20.tmx"};
-    private long tiempos[] = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40};
+    private long tiempos[] = {30, 30, 30, 30, 20, 25, 15, 25, 25, 0, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40};
     long tiempoFinal = 40;
+    private int[] iniciosX = {0,0,0,0,1200,0,0,2200,-200,1200,300,300,300,300,300,300,300,300,300,300};
+    private int[] iniciosY = {800,-3000,-1000,800,800,300,-3000,-1100,800,800,600,600,600,600,600,600,600,600,600,600};
+    private boolean nivelFinal = false;
+    private String rutaMundo;
     
 
 	/**
 	 * Create the panel.
 	 */
-	public AreaJuego(int contador,JuegoOscar juegoOscar) {
+	public AreaJuego(int contador,JuegoOscar juegoOscar, PanelMenu pnlMenu) {
 		nivelPanelAnterior = contador;
 		this.juegoOscar = juegoOscar;
 		setBounds(0, 0, 300, 100);
 		setBackground(Color.gray);
 		setFocusable(true);
+		this.pnlMenu = pnlMenu;
 		setRequestFocusEnabled(true);
 		//crearPlataformas();
+		switch (pnlMenu.getEstado()) {
+		case JuegoOscar.BOSQUE:
+			rutaMundo = "bosque";
+			break;
+		case JuegoOscar.LABORATORIO:
+			rutaMundo = "lab";
+			break;
+		case JuegoOscar.MANSION:
+			rutaMundo = "mansion";
+			break;
+		case JuegoOscar.CIUDAD:
+			rutaMundo = "ciudad";
+			break;
+		}
 		cargarNivel(niveles[contador]);
 		tiempoFinal = tiempos[contador];
 		personaje = new Personaje(this, 300, 600);
+		personaje.setxScroll(iniciosX[contador]);
+		personaje.setyScroll(iniciosY[contador]);
+		personaje.setXScrollOriginal(iniciosX[contador]);
+		personaje.setYScrollOriginal(iniciosY[contador]);
 		try {
             ClassLoader classLoader = PanelMenu.class.getClassLoader();
             InputStream is = classLoader.getResourceAsStream("PressStart2P-Regular.ttf");
@@ -77,6 +100,7 @@ public class AreaJuego extends JPanel {
             e.printStackTrace();
         }
 		eventos = new EventosAreaJuego(this);
+		
 	}
 	
 	public void cambiarTamaño(int x, int y) {
@@ -121,6 +145,7 @@ public class AreaJuego extends JPanel {
 		}
 
 		finalPolvo.dibujar(g2d);
+		// Dibujar obstaculo
 
 		// Dibujar plataformas
 		for (Plataforma p : plataformas) {
@@ -183,32 +208,45 @@ public class AreaJuego extends JPanel {
 		int minutos = (int) (tiempoFinal / 60000);
 		int segundos = (int) ((tiempoFinal / 1000) % 60);
 		int decimas = (int) ((tiempoFinal / 10) % 100);
+		int aux = 0;
+		switch (pnlMenu.getEstado()) {
+		case JuegoOscar.BOSQUE:
+			aux = 0;
+			break;
+		case JuegoOscar.LABORATORIO:
+			aux = 5;
+			break;
+		case JuegoOscar.MANSION:
+			aux = 10;
+			break;
+		case JuegoOscar.CIUDAD:
+			aux = 15;
+			break;
+		}
 
 		String tiempoFormateado = String.format("%02d:%02d:%02d", minutos, segundos, decimas);
 		if (record.equals("")) {
 			record = tiempoFormateado;
 			rutarRecord = puntuacion;
-			pnlMenu.getTiempos()[nivelPanelAnterior] = tiempoFormateado;
-			pnlMenu.getPuntuaciones()[nivelPanelAnterior] = puntuacion;
-			pnlMenu.getJuego().guardarDatos("datos.txt");
+			pnlMenu.getTiempos()[nivelPanelAnterior-aux] = tiempoFormateado;
+			pnlMenu.getPuntuaciones()[nivelPanelAnterior-aux] = puntuacion;
 		} else {
 			if (sacarValorPuntuacion(puntuacion) > sacarValorPuntuacion(rutarRecord)) {
 				record = tiempoFormateado;
 				rutarRecord = puntuacion;
-				pnlMenu.getTiempos()[nivelPanelAnterior] = tiempoFormateado;
-				pnlMenu.getPuntuaciones()[nivelPanelAnterior] = puntuacion;
-				pnlMenu.getJuego().guardarDatos("datos.txt");
+				pnlMenu.getTiempos()[nivelPanelAnterior-aux] = tiempoFormateado;
+				pnlMenu.getPuntuaciones()[nivelPanelAnterior-aux] = puntuacion;
 			} else if (sacarValorPuntuacion(puntuacion) == sacarValorPuntuacion(rutarRecord) && tiempoFinal < eventos.getTiempoFinal()) {
 				record = tiempoFormateado;
 				rutarRecord = puntuacion;
-				pnlMenu.getTiempos()[nivelPanelAnterior] = tiempoFormateado;
-				pnlMenu.getPuntuaciones()[nivelPanelAnterior] = puntuacion;
-				pnlMenu.getJuego().guardarDatos("datos.txt");
+				pnlMenu.getTiempos()[nivelPanelAnterior-aux] = tiempoFormateado;
+				pnlMenu.getPuntuaciones()[nivelPanelAnterior-aux] = puntuacion;
 			}
 		}
 		if (sacarValorPuntuacion(puntuacion) > 2) {
-			pnlMenu.getCompletados()[nivelPanelAnterior] = true;
+			pnlMenu.getCompletados()[nivelPanelAnterior-aux] = true;
 		}
+		pnlMenu.getJuego().guardarDatos("datos.txt");
 	}
 	
 	public int sacarValorPuntuacion(String puntuacion) {
@@ -271,7 +309,7 @@ public class AreaJuego extends JPanel {
 		                            int real_y = y;
 
 		                            // Check if the current tile is part of a group
-		                            if (tileValue == 1 || tileValue == 2) {
+		                            if (tileValue == 1 || tileValue == 2 || tileValue == 13) {
 		                                // Calculate the width of the platform or obstacle
 		                                int width = 1;
 		                                while (x + width < tiles_data.length && Integer.parseInt(tiles_data[x + width].trim()) == tileValue) {
@@ -282,27 +320,29 @@ public class AreaJuego extends JPanel {
 		                                x += width - 1;
 
 		                                // Create a platform or obstacle based on the tile value and width
-		                                if (tileValue == 1) {
-		                                    plataformas.add(new Plataforma(real_x * 100, real_y * 100 - 3000, width * 100, 100));
+		                                if (tileValue == 1 || tileValue == 13) {
+		                                    plataformas.add(new Plataforma(real_x * 100, real_y * 100 - 3000, width * 100, 100, pnlMenu.getEstado()));
 		                                    // Generate a platform at position (real_x, real_y) with extended width
 		                                } else if (tileValue == 2) {
-		                                    obstaculos.add(new Obstaculo(real_x * 100, (real_y * 100) - 3000, width * 100, 100));
+		                                    obstaculos.add(new Obstaculo(real_x * 100, (real_y * 100) - 3000, width * 100, 100, pnlMenu.getEstado()));
 		                                    // Generate an obstacle at position (real_x, real_y) with extended width
 		                                } 
 		                            } else if (tileValue == 3 || tileValue == 4) {
-                                        plataformas.add(new Plataforma(real_x * 100, real_y * 100 - 3000, 100, 100, tileValue));
+                                        plataformas.add(new Plataforma(real_x * 100, real_y * 100 - 3000, 100, 100, tileValue,pnlMenu.getEstado()));
 	                                } else if (tileValue == 8) {
-	                                	finalPolvo = new Polvo((real_x * 100) + 25, (real_y * 100 - 3000) + 25, 75, 75, true);
+	                                	finalPolvo = new Polvo((real_x * 100) + 25, (real_y * 100 - 3000) + 25, 75, 75, true, pnlMenu.getEstado());
 	                                } else if (tileValue == 9) {
-	                                	polvos.add(new Polvo((real_x * 100) + 25, (real_y * 100 - 3000) + 25, 50, 50));
+	                                	polvos.add(new Polvo((real_x * 100) + 25, (real_y * 100 - 3000) + 25, 50, 50, pnlMenu.getEstado()));
 									} else if (tileValue == 5 ||  tileValue == 6 || tileValue == 7) {
-										obstaculos.add(new Obstaculo(real_x * 100, real_y * 100 - 3000, 100, 100, tileValue-4));
+										obstaculos.add(new Obstaculo(real_x * 100, real_y * 100 - 3000, 100, 100, tileValue-4,pnlMenu.getEstado()));
 									} else if (tileValue == 12) {
-										plataformas.add(new Plataforma(real_x * 100, real_y * 100 - 3000, 100, 100, tileValue));
+										plataformas.add(new Plataforma(real_x * 100, real_y * 100 - 3000, 100, 100, tileValue,pnlMenu.getEstado()));
 									} else if (tileValue == 11) {
-										enemigos.add(new Enemigo(real_x * 100, real_y * 100 - 3000, 100, 100, 0, 5, 0));
+										enemigos.add(new Enemigo(real_x * 100, real_y * 100 - 3000, 100, 100, 0, -7, 0, pnlMenu.getEstado()));
+										enemigos.get(enemigos.size()-1).setTipoEnemigo(pnlMenu.getEstado());
 									} else if (tileValue == 10) {
-										
+										enemigos.add(new Enemigo(real_x * 100, real_y * 100 - 3000, 100, 100, -7, 0, 0, pnlMenu.getEstado()));
+										enemigos.get(enemigos.size()-1).setTipoEnemigo(pnlMenu.getEstado());
 									}
 		                        }
 		                    }
@@ -589,6 +629,22 @@ public class AreaJuego extends JPanel {
 
 	public void setRutarRecord(String rutarRecord) {
 		this.rutarRecord = rutarRecord;
+	}
+
+	public boolean isNivelFinal() {
+		return nivelFinal;
+	}
+
+	public void setNivelFinal(boolean nivelFinal) {
+		this.nivelFinal = nivelFinal;
+	}
+
+	public String getRutaMundo() {
+		return rutaMundo;
+	}
+
+	public void setRutaMundo(String rutaMundo) {
+		this.rutaMundo = rutaMundo;
 	}
 
 }

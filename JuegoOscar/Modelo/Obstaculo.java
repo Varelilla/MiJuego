@@ -12,8 +12,8 @@ public class Obstaculo extends Plataforma{
 	private int pincho;
 	private int mov;
 	
-	public Obstaculo(int x, int y, int w, int h) {
-		super(x, y, w, h);
+	public Obstaculo(int x, int y, int w, int h,int estado) {
+		super(x, y, w, h,estado);
 		image = new ImageIcon(getClass().getResource("bosque/7.png")).getImage();
 		pinchoDerecha = new ImageIcon(getClass().getResource("bosque/pinchoDerecha.png")).getImage();
 		pinchoIzquierda = new ImageIcon(getClass().getResource("bosque/pinchoIzquierda.png")).getImage();
@@ -22,15 +22,32 @@ public class Obstaculo extends Plataforma{
 		mov = 1;
 	}
 	
-	public Obstaculo(int x, int y, int w, int h, int pincho) {
-		super(x, y, w, h);
-		image = new ImageIcon(getClass().getResource("bosque/8.png")).getImage();
-		pinchoDerecha = new ImageIcon(getClass().getResource("bosque/pinchoDerecha.png")).getImage();
-		pinchoIzquierda = new ImageIcon(getClass().getResource("bosque/pinchoIzquierda.png")).getImage();
-		pinchoArriba = new ImageIcon(getClass().getResource("bosque/pinchoArriba.png")).getImage();
+	public Obstaculo(int x, int y, int w, int h, int pincho,int estado) {
+		super(x, y, w, h,estado);
+		String ruta = "";
+		switch (estado) {
+		case JuegoOscar.BOSQUE:
+			ruta = "bosque";
+			break;
+		case JuegoOscar.LABORATORIO:
+			ruta = "lab";
+			break;
+		case JuegoOscar.CIUDAD:
+			ruta = "ciudad";
+			break;
+		case JuegoOscar.MANSION:
+			ruta = "mansion";
+			break;
+		}
+
+		image = new ImageIcon(getClass().getResource(ruta +"/8.png")).getImage();
+		pinchoDerecha = new ImageIcon(getClass().getResource(ruta +"/pinchoDerecha.png")).getImage();
+		pinchoIzquierda = new ImageIcon(getClass().getResource(ruta +"/pinchoIzquierda.png")).getImage();
+		pinchoArriba = new ImageIcon(getClass().getResource(ruta +"/pinchoArriba.png")).getImage();
 		this.pincho = pincho;
 		mov = 1;
 	}
+	
 	
 	public void dibujar(Graphics g) {
 		

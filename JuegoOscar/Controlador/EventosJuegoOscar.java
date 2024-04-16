@@ -19,7 +19,6 @@ public class EventosJuegoOscar {
 
 	public void registrarEventos() {
 
-		
 		juego.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {

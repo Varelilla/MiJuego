@@ -76,8 +76,8 @@ public class JuegoOscar extends JFrame {
 		setBounds(0, 0, 1900, 980);
 
 		setMinimumSize(new Dimension(950, 490));
-		areaJuego = new AreaJuego(0,this);
-		areaJuego.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		
 
 		pnlCiudad = new PanelMenu(CIUDAD,this);
 		pnlMansion = new PanelMenu(MANSION,this);
@@ -85,7 +85,8 @@ public class JuegoOscar extends JFrame {
 		pnlControles = new PanelMenu(CONTROLS,this);
 		pnlLaboratorio= new PanelMenu(LABORATORIO,this);
 		cargarDatos("datos.txt");
-		
+		areaJuego = new AreaJuego(0,this,pnlBosque);
+		areaJuego.setBorder(new EmptyBorder(5, 5, 5, 5));
 		mainmenu = new PanelMenu(MAINMENU,this);
 			    
 		setTitle("DustForce");
@@ -135,7 +136,6 @@ public class JuegoOscar extends JFrame {
                 aux = null;
                 writer.newLine();
             }
-            System.out.println("Datos de todos los mundos guardados correctamente en " + nombreArchivo);
         } catch (IOException e) {
             System.err.println("Error al guardar los datos: " + e.getMessage());
         }
@@ -188,7 +188,6 @@ public class JuegoOscar extends JFrame {
                     mundo++;
                 }
             }
-            System.out.println("Datos de todos los mundos cargados correctamente desde " + nombreArchivo);
         } catch (IOException e) {
             System.err.println("Error al cargar los datos: " + e.getMessage());
         }

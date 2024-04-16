@@ -140,6 +140,20 @@ public class EventosAreaJuego {
 						}
 					}
 				}
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					if (!areaJuego.isEsperandoConfirmacion()) {
+						areaJuego.setEsperandoConfirmacion(false);
+						areaJuego.getJuegoOscar().getContentPane().removeAll();
+						areaJuego.getJuegoOscar().getContentPane().add(areaJuego.getPnlMenu(), BorderLayout.CENTER);
+						areaJuego.getPnlMenu().requestFocus();
+						areaJuego.getJuegoOscar().revalidate();
+						areaJuego.getJuegoOscar().repaint();
+						// Por ultimo eliminamos areaJuego para no seguir consumiendo recursos
+						relojAnimacion.stop();
+						reloj.stop();
+						areaJuego = null;
+					}
+				}
 			}
 			
 			@Override

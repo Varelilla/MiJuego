@@ -35,6 +35,7 @@ public class PanelMenu extends JPanel{
 	private EventosPanelMenu eventos;
 	private Font font;
 	private double relX, relY;
+	private int estado;
 	
 	public PanelMenu(int estado, JuegoOscar juegoOscar) {
 		// TODO Auto-generated constructor stub
@@ -55,6 +56,7 @@ public class PanelMenu extends JPanel{
             e.printStackTrace();
         }
 		marcador = new ImageIcon(getClass().getResource("menu/flecha.png")).getImage();
+		this.estado = estado;
 		switch (estado) {
 		case JuegoOscar.MAINMENU:
 			img = new ImageIcon(getClass().getResource("menu/mainMenu.png")).getImage();
@@ -80,7 +82,7 @@ public class PanelMenu extends JPanel{
 					"Esc: Pausar el Juego.",
 					"El personaje dispone de doble salto que  solo se resetea si pisas el suelo.    "
 					+ "El personaje puede posarse en los muros  para reducir la velocidad de caida  y realizar otro salto.    "
-					+ "El objetivo es llegar al final de cada  nivel lo mas rapido posible y limpiar  la mayor cantidad de polvo posible."};
+					+ "El objetivo es llegar al final de cada  nivel lo mas rapido posible y coger la mayor cantidad de escobas."};
 			break;
 		case JuegoOscar.BOSQUE:
 			img = new ImageIcon(getClass().getResource("menu/bosque.png")).getImage();
@@ -244,5 +246,13 @@ public class PanelMenu extends JPanel{
 
 	public void setCompletados(boolean[] completados) {
 		this.completados = completados;
+	}
+
+	public int getEstado() {
+		return estado;
+	}
+
+	public void setEstado(int estado) {
+		this.estado = estado;
 	}
 }

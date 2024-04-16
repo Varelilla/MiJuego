@@ -9,14 +9,14 @@ public class Polvo extends Plataforma{
 	private Image image;
 
 	
-	public Polvo(int x, int y, int w, int h) {
-		super(x, y, w, h);
+	public Polvo(int x, int y, int w, int h,int estado) {
+		super(x, y, w, h, estado);
 		pisado = false;
 		image = new ImageIcon(getClass().getResource("objetos/escoba.png")).getImage();
 	}
 	
-	public Polvo(int x, int y, int w, int h, boolean aspirador) {
-		super(x, y, w, h);
+	public Polvo(int x, int y, int w, int h, boolean aspirador,int estado) {
+		super(x, y, w, h,estado);
 		pisado = false;
 		if (aspirador) image = new ImageIcon(getClass().getResource("objetos/aspiradora.png")).getImage();
 	}
