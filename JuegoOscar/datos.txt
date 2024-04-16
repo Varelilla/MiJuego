@@ -1,11 +1,11 @@
 Mundo 0:
-00:18:00 ,01:12:48 ,01:08:54 ,01:08:54 ,00:56:49 ,
-puntuaciones/SSS.png ,puntuaciones/SSS.png ,puntuaciones/SSS.png ,puntuaciones/SSS.png ,puntuaciones/SSS.png ,
-true ,true ,true ,true ,true ,
+00:47:79 , , , , ,
+puntuaciones/SSS.png , , , , ,
+true ,false ,false ,false ,false ,
 Mundo 1:
-00:58:00 ,00:41:54 ,00:57:01 ,00:54:92 ,00:31:40 ,
-puntuaciones/SSS.png ,puntuaciones/SSS.png ,puntuaciones/SSS.png ,puntuaciones/SSS.png ,puntuaciones/SSS.png ,
-true ,true ,true ,true ,true ,
+ , , , , ,
+ , , , , ,
+false ,false ,false ,false ,false ,
 Mundo 2:
  , , , , ,
  , , , , ,
